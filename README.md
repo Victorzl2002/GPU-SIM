@@ -1,10 +1,17 @@
+<!--
+ * @Author: Victorzl
+ * @Date: 2025-10-22 14:46:19
+ * @LastEditors: Victorzl
+ * @LastEditTime: 2025-10-24 10:13:38
+ * @Description: 请填写简介
+-->
 # 基于GPU API沙盒机制的异构GPU池化系统
 
 ## 项目结构
 
 ```
 gpu-sim/
-├── adapters/                    # 硬件适配器层
+├── adapters/                   # 硬件适配器层
 │   ├── cuda/                   # NVIDIA CUDA适配器
 │   └── cann/                   # 华为CANN适配器
 ├── core/                       # 核心功能模块
@@ -82,3 +89,12 @@ gpu-sim/
 - **软隔离**: API沙盒机制实现安全共享
 - **动态调度**: 基于SLO的动态扩缩容
 - **公平分配**: DRF算法保证资源公平性
+
+
+
+Phase 1: vGPU资源模型 (当前步骤)
+Phase 2: 硬件适配器层 (adapters/)
+Phase 3: 调度系统 (core/scheduling/)
+Phase 4: API沙盒机制 (core/isolation/)
+Phase 5: 实验策略实现 (experiments/)
+Phase 6: 监控与评估 (monitoring/ + evaluation/)

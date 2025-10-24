@@ -1,14 +1,13 @@
 """
 vGPU资源模型定义
-
 实现vGPU三维资源模型 ⟨Compute, Memory, Bandwidth⟩
 """
+
 
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Any, Optional
 import math
-
 
 class ResourceType(Enum):
     """资源类型枚举"""
@@ -93,23 +92,21 @@ class VGPUResource:
             model=self.model
         )
     
-    def calculate_score(self, alpha: float, beta: float, gamma: float, 
+    def calculate_score(self, effective_capacity: 'VGPUResource',
                        performance_weight: float = 1.0) -> float:
         """
         计算跨厂商平台得分
         
         Args:
-            alpha: Compute折算系数
-            beta: Memory折算系数
-            gamma: Bandwidth折算系数
+            effective_capacity: 有效可用容量 D^eff=(αC, βM, γB)
             performance_weight: 性能权重
             
         Returns:
-            标准化得分: score = perf / Σ(c/α + m/β + b/γ)
+            标准化得分: score = perf / Σ(c/C^eff + m/M^eff + b/B^eff)
         """
-        normalized_resource = (self.compute / alpha + 
-                             self.memory / beta + 
-                             self.bandwidth / gamma)
+        normalized_resource = (self.compute / effective_capacity.compute +
+                             self.memory / effective_capacity.memory +
+                             self.bandwidth / effective_capacity.bandwidth)
         if normalized_resource == 0:
             return 0.0
         return performance_weight / normalized_resource

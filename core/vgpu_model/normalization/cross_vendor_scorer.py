@@ -15,13 +15,15 @@ class CrossVendorScorer:
     def __init__(self):
         self.coefficient_manager = CoefficientManager()
     
-    def calculate_cross_vendor_score(self, resource: VGPUResource, 
+    def calculate_cross_vendor_score(self, task: VGPUResource, 
+                                   gpu: VGPUResource,
                                    performance_weight: float = 1.0) -> float:
         """
         计算跨厂商得分
         
         Args:
-            resource: vGPU资源
+            task: 任务资源需求
+            gpu: GPU资源
             performance_weight: 性能权重
             
         Returns:
@@ -29,16 +31,24 @@ class CrossVendorScorer:
         """
         # 获取折算系数
         coeff = self.coefficient_manager.get_coefficients(
-            resource.vendor, resource.model
+            gpu.vendor, gpu.model
         )
         
         if coeff is None:
-            raise ValueError(f"未找到厂商 {resource.vendor} 型号 {resource.model} 的折算系数")
+            raise ValueError(f"未找到厂商 {gpu.vendor} 型号 {gpu.model} 的折算系数")
         
-        # 计算标准化得分
-        return resource.calculate_score(
-            coeff.alpha, coeff.beta, coeff.gamma, performance_weight
+        # 计算有效可用容量 D^eff=(αC, βM, γB)
+        effective_capacity = VGPUResource(
+            compute=gpu.compute * coeff.alpha,
+            memory=gpu.memory * coeff.beta,
+            bandwidth=gpu.bandwidth * coeff.gamma,
+            resource_id=f"{gpu.resource_id}_effective",
+            vendor=gpu.vendor,
+            model=gpu.model
         )
+        
+        # 计算得分 score = perf / Σ(c/C^eff + m/M^eff + b/B^eff)
+        return task.calculate_score(effective_capacity, performance_weight)
     
     def compare_resources(self, resources: List[VGPUResource], 
                          performance_weight: float = 1.0) -> List[Tuple[VGPUResource, float]]:
@@ -120,5 +130,4 @@ class CrossVendorScorer:
                 'memory': resource.memory,
                 'bandwidth': resource.bandwidth
             })
-        
         return ranking
