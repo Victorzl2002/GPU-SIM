@@ -14,7 +14,7 @@ SCENARIO = ExperimentProfile(
     description="静态分片（MIG近似），任务独占节点，评估利用率下限",
     simulation=SimulationConfig(
         delta_t=0.02,
-        duration=360.0,
+        duration=320.0,
         scheduling_interval=8,
         scheduling=SchedulingConfig(static_partition=True, enable_sharing=False, oversubscription=1.0),
         sandbox=SandboxConfig(
@@ -24,6 +24,6 @@ SCENARIO = ExperimentProfile(
             slo_guard=SLOGuardConfig(enabled=False),
         ),
     ),
-    num_tasks=30,
+    num_tasks=45,
     arrival_mode="burst",
 )

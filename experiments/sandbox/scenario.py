@@ -14,7 +14,7 @@ SCENARIO = ExperimentProfile(
     description="GLB 两级调度 + API 沙盒三门（显存/带宽/算力）+ SLO 守护闭环",
     simulation=SimulationConfig(
         delta_t=0.01,
-        duration=360.0,
+        duration=320.0,
         scheduling_interval=4,
         scheduling=SchedulingConfig(static_partition=False, enable_sharing=True, oversubscription=1.15),
         sandbox=SandboxConfig(
@@ -26,6 +26,6 @@ SCENARIO = ExperimentProfile(
             compute_ceiling=1.25,
         ),
     ),
-    num_tasks=42,
+    num_tasks=60,
     arrival_mode="burst",
 )

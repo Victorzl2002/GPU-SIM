@@ -14,7 +14,7 @@ SCENARIO = ExperimentProfile(
     description="固定切片 + 局部共享 (ParvaGPU 近似)，无API沙盒",
     simulation=SimulationConfig(
         delta_t=0.02,
-        duration=360.0,
+        duration=320.0,
         scheduling_interval=6,
         scheduling=SchedulingConfig(static_partition=True, enable_sharing=True, oversubscription=0.95),
         sandbox=SandboxConfig(
@@ -24,6 +24,6 @@ SCENARIO = ExperimentProfile(
             slo_guard=SLOGuardConfig(enabled=False),
         ),
     ),
-    num_tasks=34,
+    num_tasks=52,
     arrival_mode="wave",
 )

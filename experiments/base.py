@@ -64,35 +64,35 @@ def build_reference_cluster() -> List[ClusterNode]:
 
 DEFAULT_PROFILES = [
     TaskProfile(
-        name="llm-batch",
-        demand=VGPUResource(compute=140, memory=48, bandwidth=800, resource_id="llm-batch", vendor="", model=""),
-        workload=3200,   # 理想完成时间 ~23s
-        deadline=35.0,
-        compatibility={"nvidia", "huawei"},
+        name="llm-surge",
+        demand=VGPUResource(compute=260, memory=70, bandwidth=1350, resource_id="llm-surge", vendor="", model=""),
+        workload=7800,   # 理想完成时间 30s
+        deadline=36.0,
+        compatibility={"nvidia"},
         k_min=2,
         k_max=4,
     ),
     TaskProfile(
-        name="cv-online",
-        demand=VGPUResource(compute=80, memory=24, bandwidth=550, resource_id="cv-online", vendor="", model=""),
-        workload=1600,   # 理想完成时间 20s
-        deadline=28.0,
-        compatibility={"nvidia"},
-        k_min=1,
-        k_max=2,
+        name="multimodal-burst",
+        demand=VGPUResource(compute=200, memory=60, bandwidth=1200, resource_id="multimodal-burst", vendor="", model=""),
+        workload=6600,   # 理想完成时间 33s
+        deadline=40.0,
+        compatibility={"nvidia", "huawei"},
+        k_min=2,
+        k_max=3,
     ),
     TaskProfile(
-        name="preprocess",
-        demand=VGPUResource(compute=60, memory=28, bandwidth=380, resource_id="preprocess", vendor="", model=""),
-        workload=1800,   # 理想完成时间 30s
-        deadline=42.0,
+        name="preprocess-heavy",
+        demand=VGPUResource(compute=140, memory=40, bandwidth=520, resource_id="preprocess-heavy", vendor="", model=""),
+        workload=4200,   # 理想完成时间 30s
+        deadline=38.0,
         compatibility={"nvidia", "huawei"},
     ),
     TaskProfile(
-        name="feature-etl",
-        demand=VGPUResource(compute=40, memory=18, bandwidth=260, resource_id="feature-etl", vendor="", model=""),
-        workload=900,    # 理想完成时间 22.5s
-        deadline=30.0,
+        name="feature-mix",
+        demand=VGPUResource(compute=110, memory=32, bandwidth=420, resource_id="feature-mix", vendor="", model=""),
+        workload=3300,    # 理想完成时间 30s
+        deadline=36.0,
         compatibility={"huawei"},
     ),
 ]

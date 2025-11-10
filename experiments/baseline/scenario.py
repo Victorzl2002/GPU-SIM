@@ -14,7 +14,7 @@ SCENARIO = ExperimentProfile(
     description="无沙盒 + 共享池，仅测试GLB调度对利用率与干扰的影响",
     simulation=SimulationConfig(
         delta_t=0.02,
-        duration=360.0,
+        duration=320.0,
         scheduling_interval=4,
         scheduling=SchedulingConfig(static_partition=False, enable_sharing=True, oversubscription=1.0),
         sandbox=SandboxConfig(
@@ -24,6 +24,6 @@ SCENARIO = ExperimentProfile(
             slo_guard=SLOGuardConfig(enabled=False),
         ),
     ),
-    num_tasks=32,
+    num_tasks=48,
     arrival_mode="poisson",
 )
