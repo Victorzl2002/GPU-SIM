@@ -1,10 +1,7 @@
 """
-跨厂商/资源池选址模块
-
-实现一级调度：基于折算系数与平台得分选择最佳GPU平台
+Compat layer for the vendor selector.
 """
 
-from .vendor_selector import VendorSelector, Platform, VendorSelectionResult
+from core.scheduling.vendor_selector import VendorDecision, VendorSelector
 
-__all__ = ['VendorSelector', 'Platform', 'VendorSelectionResult']
-
+__all__ = ["VendorSelector", "VendorDecision"]

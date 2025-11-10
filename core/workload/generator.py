@@ -1,0 +1,82 @@
+"""
+工作负载生成工具：根据实验定义批量生成带 SLO 的任务序列。
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import List, Sequence, Set
+import math
+import random
+
+from core.vgpu_model.resource_model.vgpu_resource import VGPUResource
+
+from .task import Task
+
+
+@dataclass
+class TaskProfile:
+    """描述一类任务的三维需求、工作量与兼容性。"""
+
+    name: str
+    demand: VGPUResource
+    workload: float
+    deadline: float
+    compatibility: Set[str]
+    k_min: int = 1
+    k_max: int = 1
+
+
+class WorkloadGenerator:
+    """用于生成 Poisson / Burst / Wave 等不同到达过程的任务列表。"""
+
+    def __init__(self, seed: int = 2025):
+        self._rng = random.Random(seed)
+
+    def _sample_arrival(self, duration: float, mode: str) -> float:
+        """按照模式采样到达时间，支持泊松/突发/波动等形态。"""
+        if mode == "poisson":
+            return self._rng.uniform(0, duration)
+        if mode == "burst":
+            if self._rng.random() < 0.3:
+                return self._rng.uniform(0, duration * 0.2)
+            return self._rng.uniform(duration * 0.2, duration)
+        if mode == "wave":
+            t = self._rng.uniform(0, 1)
+            return duration * ((1 - math.cos(2 * math.pi * t)) / 2)
+        return self._rng.uniform(0, duration)
+
+    def generate(
+        self,
+        profiles: Sequence[TaskProfile],
+        num_tasks: int,
+        duration: float,
+        arrival_mode: str = "poisson",
+    ) -> List[Task]:
+        """根据任务谱生成指定数量的 Task，默认按到达时间排序。"""
+        tasks: List[Task] = []
+        for idx in range(num_tasks):
+            profile = profiles[idx % len(profiles)]
+            arrival_time = self._sample_arrival(duration, arrival_mode)
+            ideal_duration = profile.workload / max(profile.demand.compute, 1e-6)
+            task = Task(
+                task_id=f"{profile.name}-{idx}",
+                demand=VGPUResource(
+                    compute=profile.demand.compute,
+                    memory=profile.demand.memory,
+                    bandwidth=profile.demand.bandwidth,
+                    resource_id=f"task-{idx}",
+                    vendor="",
+                    model="",
+                ),
+                workload=profile.workload,
+                arrival_time=arrival_time,
+                deadline=profile.deadline,
+                compatibility=set(profile.compatibility),
+                k_min=profile.k_min,
+                k_max=profile.k_max,
+                ideal_duration=ideal_duration,
+            )
+            tasks.append(task)
+        tasks.sort(key=lambda t: t.arrival_time)
+        return tasks

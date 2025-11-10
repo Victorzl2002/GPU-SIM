@@ -1,10 +1,8 @@
 """
-通用得分函数与负载计算工具
-
-提供调度系统所需的通用得分计算和负载均衡工具函数
+Re-export scoring helpers for backward compatibility.
 """
 
-# TODO: 实现通用得分函数和负载计算工具
+from core.scheduling.node_selector import NodeScore, NodeSelector
+from core.scheduling.vendor_selector import VendorDecision, VendorSelector
 
-__all__ = []
-
+__all__ = ["NodeSelector", "NodeScore", "VendorSelector", "VendorDecision"]

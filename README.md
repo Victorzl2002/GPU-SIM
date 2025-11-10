@@ -1,146 +1,64 @@
-# 基于GPU API沙盒机制的异构GPU池化系统
+# GPU-SIM：异构 vGPU 池离散仿真平台
 
-## 项目结构
+本仓库依据《仿真实验思路.md》完成了体系化重构，落地“多厂商 GPU 统一 vGPU 池 + GLB 两级调度 + API 沙盒三门限流”离散时间仿真框架。所有实验策略（A1–A5）均可在同一工作负载上复现 GPU 利用率、SLO 满足率、干扰率与稳定性指标。
+
+## 目录结构
 
 ```
 gpu-sim/
-├── adapters/                   # 硬件适配器层
-│   ├── cuda/                   # NVIDIA CUDA适配器
-│   └── cann/                   # 华为CANN适配器
-├── core/                       # 核心功能模块
-│   ├── vgpu_model/            # vGPU三维资源模型
-│   │   ├── resource_model/    # 资源模型定义 ⟨Compute, Memory, Bandwidth⟩
-│   │   └── normalization/     # 软件栈折算系数 (α, β, γ)
-│   ├── scheduling/            # 调度系统
-│   │   ├── vendor_select/    # 一级：跨厂商/资源池选址 (基于折算系数与平台得分)
-│   │   ├── node_glb/         # 二级：池内节点选择 (LRP + BRA 负载均衡)
-│   │   └── scoring/          # 通用得分函数与负载计算工具
-│   └── isolation/            # API沙盒机制
-│       ├── api_model/        # API抽象模型
-│       ├── hooks/            # 软隔离控制钩子
-│       ├── limiters/         # 配额门、令牌桶、链路门
-│       └── policies/         # 隔离策略配置
-├── experiments/               # 实验策略对比
-│   ├── baseline/             # A1: 无隔离基线
-│   ├── hard_split/           # A2: 硬切分（MIG近似，三维静态）
-│   ├── parvagpu/             # A2P: ParvaGPU 近似策略（本文新增）
-│   ├── sandbox/              # A3: 本文 API 沙盒 + GLB 调度（开环/闭环变体）
-│   ├── abl_no_link_gate/     # A4: 去链路门（消融）
-│   └── abl_no_slo_guard/     # A5: 去SLO守护（消融）
-├── evaluation/               # 评估分析
-│   ├── metrics/              # 评估指标 (GPU利用率、干扰率、SLO满足率)
-│   └── analysis/             # 结果分析
-├── monitoring/               # 监控系统
-│   ├── slo/                  # SLO监控与动态调度
-│   └── telemetry/            # 遥测数据收集
-│       └── dashboards/       # 监控仪表板
-├── utils/                    # 工具模块
-│   ├── config/               # 配置文件
-│   └── scripts/              # 脚本工具
-├── tests/                    # 测试用例
-└── docs/                     # 文档
+├── core/
+│   ├── cluster/           # GPU/节点模型 (Step 2.4)
+│   ├── workload/          # 任务属性与生成器 (Step 3)
+│   ├── scheduling/        # GLB 两级调度 (Step 4)
+│   ├── isolation/         # API 沙盒三门 + SLO 守护 (Step 5)
+│   ├── simulation/        # 离散时间主循环 (Step 6)
+│   └── vgpu_model/        # 资源归一化与折算系数 (Step 2.1–2.3)
+├── experiments/           # A1–A5 场景定义 + runner (Step 7)
+├── evaluation/            # 指标收集与分析 (Step 8)
+└── 仿真实验思路.md        # 设计蓝图 (Step 0)
 ```
 
-## 核心设计理念
+## 仿真流水线
 
-### 1. 统一抽象层 (adapters/)
-- 支持NVIDIA A100 (CUDA) 和华为Ascend 910B (CANN)
-- 通过软件栈折算系数实现跨厂商可比性
+1. **集群定义**（`core/cluster`）  
+   - 以 `GPUDevice`+`ClusterNode` 表达多厂商异构拓扑；节点容量由折算系数 (α, β, γ) 归一。
+2. **任务与工作负载**（`core/workload`）  
+   - `TaskProfile` 给出 dᵢ=(cᵢ,mᵢ,bᵢ)、兼容性、SLO、工作量；`WorkloadGenerator` 生成到达序列。
+3. **GLB 两级调度**（`core/scheduling`）  
+   - `VendorSelector` 依据跨厂商得分锁定最优平台，`NodeSelector` 用 LRP+BRA 贪心，`GLBScheduler` 输出静态配额 Qᵢ。
+4. **API 沙盒三门**（`core/isolation`）  
+   - 显存配额门、带宽令牌桶、算力节流门构成 `APISandbox`；`SLOGuard` 在尾部抖动时提升 compute gate。
+5. **离散主循环**（`core/simulation`）  
+   - 每 tick 执行“任务到达 → 调度 → 沙盒限流 → 进度推进 → 度量采样”，并在 deadline 触发 SLO/drop。
+6. **指标收集**（`evaluation/metrics/collector.py`）  
+   - 输出 SLO rate、平均 IR、节点利用率/稳定性、三门触发次数等，供 README/论文 6.x 章节引用。
 
-### 2. vGPU三维资源模型 (core/vgpu_model/)
-- 资源模型: ⟨Compute, Memory, Bandwidth⟩
-- 跨厂商得分: `score = perf / Σ(c/α + m/β + b/γ)`
+## 实验场景（A1–A5）
 
-### 3. 调度系统 (core/scheduling/)
+| 场景 | 说明 | 配置入口 |
+| ---- | ---- | -------- |
+| A1   | 无沙盒共享基线 | `experiments/baseline/scenario.py` |
+| A2   | MIG 近似硬切分 | `experiments/hard_split/scenario.py` |
+| A2P  | ParvaGPU 固定切片 + 局部共享 | `experiments/parvagpu/scenario.py` |
+| A3   | GLB + API 沙盒 + SLO 守护 | `experiments/sandbox/scenario.py` |
+| A4   | A3 去链路门消融 | `experiments/abl_no_link_gate/scenario.py` |
+| A5   | A3 去 SLO 守护消融 | `experiments/abl_no_slo_guard/scenario.py` |
 
-#### 3.1 两级 GLB 调度架构
+所有场景共享 `experiments/base.py`：  
+- `ExperimentProfile` 绑定 `SimulationConfig`、默认集群（A100+910B）和任务谱；  
+- `run()` 会自动创建 `SimulationEngine` 并返回 `MetricCollector.summarize()` 的结果。  
+通过 `experiments/runner.py` 可快速调用：
 
-**一级（跨厂商/资源池选址）** - `core/scheduling/vendor_select/`
-- 实现位置：`VendorSelector` 类
-- 功能：对每个候选平台 v，基于 vGPU 三维需求 d_i 与折算系数 (α_v, β_v, γ_v) 计算等效成本
-  - 计算公式：`cost_{i,v} = c_i/C^eff + m_i/M^eff + b_i/B^eff`
-    - 其中 `C^eff = α_v·C_v`, `M^eff = β_v·M_v`, `B^eff = γ_v·B_v`
-  - 平台得分：`score_{i,v} = perf_v / cost_{i,v}`
-    - **注意**：`perf_v` 统一为 1.0，因为软件栈折算系数（α, β, γ）已经考虑了性能差异
-    - 通过折算系数计算有效可用容量后，所有平台已标准化，因此 `perf_v = 1.0`
-  - 决策：选择 score 最大的平台作为任务入口池
-- 依赖：调用 `core/vgpu_model/normalization/cross_vendor_scorer.py` 中的 `CrossVendorScorer` 进行基础得分计算
+```python
+from experiments.runner import run
 
-**二级（池内节点选择）** - `core/scheduling/node_glb/`
-- 功能：在选定平台内，对每个候选节点 n_j 计算
-  - LRP 分数 `scoreL_{i,j}`：放置后剩余资源越多越高
-  - BRA 分数 `scoreB_{i,j}`：放置后三维负载越均衡越高
-  - 合成得分：`score_{i,j} = λ·scoreL_{i,j} + (1-λ)·scoreB_{i,j}`
-  - 决策：选择得分最高节点执行任务
-
-#### 3.2 调度机制
-
-- **调度周期**：采用多时间尺度控制，每隔 T_sched 对"已到达未完成任务"重算上述得分与配额，支持任务动态到达
-- **输出**：调度层输出每任务在选定节点上的三维配额上限 (Compute/Memory/Bandwidth)
-- **执行**：由 API 沙盒在毫秒级 tick 上通过配额门、令牌桶与计算节流门将其落实为运行时限流
-
-#### 3.3 模块职责划分
-
-- **资源模型层** (`core/vgpu_model/normalization/`)：
-  - `CrossVendorScorer`：提供基础的跨厂商得分计算能力
-  - `NormalizationCoefficients`：管理折算系数
-  - 职责：提供可复用的计算工具，不包含调度决策逻辑
-
-- **调度系统层** (`core/scheduling/vendor_select/`)：
-  - `VendorSelector`：实现跨厂商选址决策
-  - `Platform`：表示GPU平台（包含资源池信息）
-  - 职责：使用资源模型层的工具完成调度决策，处理调度上下文
-
-### 4. API沙盒机制 (core/isolation/)
-- 软隔离控制
-- 配额门、令牌桶、链路门限流
-- kernel执行、显存访问、通信带宽控制
-
-### 5. SLO监控与动态调度 (monitoring/slo/)
-- p95延迟滑窗监测
-- 动态Stream调度
-- 扩/缩卡策略
-
-### 6. 实验评估 (experiments/ + evaluation/)
-- **A1**: 无隔离基线
-- **A2**: 硬切分（MIG近似，三维静态）
-- **A2P**: ParvaGPU 近似策略（本文新增）
-- **A3**: 本文 API 沙盒 + GLB 调度（开环/闭环变体）
-- **A4**: 去链路门（消融实验）
-- **A5**: 去SLO守护（消融实验）
-
-上述实验均基于两级 GLB 调度：首先按折算系数进行跨厂商资源池选址，再在池内通过 LRP+BRA 节点打分选择具体节点；沙盒机制在此基础上实施三维软隔离，用于对比不同隔离/调度组合对 GPU 利用率、干扰率与 SLO 的影响。
-
-## 技术特点
-
-- **异构统一**: 支持不同厂商GPU的统一抽象
-- **三维建模**: Compute、Memory、Bandwidth三维资源模型
-- **软隔离**: API沙盒机制实现安全共享
-- **动态调度**: 基于SLO的动态扩缩容
-- **负载均衡**: GLB 调度兼顾多任务需求与节点利用率，减少资源碎片
-
-
-
-Phase 1: vGPU资源模型 (当前步骤)
-Phase 2: 硬件适配器层 (adapters/)
-Phase 3: 调度系统 (core/scheduling/)
-Phase 4: API沙盒机制 (core/isolation/)
-Phase 5: 实验策略实现 (experiments/)
-Phase 6: 监控与评估 (monitoring/ + evaluation/)
-
-## 实验流程
-
-详细的实验步骤、实验方法、模块调用关系请参考：
-- [实验流程文档](docs/experiment_workflow.md) - 完整的实验步骤和调用关系说明
-
-### 快速开始
-
-运行完整实验流程：
-```bash
-python tests/test_vgpu_model.py
+summary = run("A3-sandbox", seed=42)
+print(summary["slo_rate"], summary["avg_interference"])
 ```
 
-运行统一测试场景：
-```bash
-python tests/test_unified_scenario.py
-```
+## 后续扩展建议
+
+1. **工作负载**：在 `core/workload/generator.py` 中增加真实 traces / Poisson 参数，即可覆盖更多 burst、混部场景。  
+2. **闭环控制**：扩充 `SandboxConfig.slo_guard`，加入全局指标 S (方差 + IR) 反馈，即可模拟论文 4.3/6.5 变体。  
+3. **监控/可视化**：将 `MetricCollector` 输出写入 `evaluation/analysis`，生成负载扫描曲线、尾延迟 CDF。  
+4. **单元测试**：在 `tests/` 中为调度与限流模块补充 deterministic case，确保 refactoring 稳定。

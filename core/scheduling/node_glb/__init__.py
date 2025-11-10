@@ -1,13 +1,7 @@
 """
-池内节点选择模块（二级调度）
-
-实现二级调度：在选定平台内，基于LRP和BRA分数选择最佳节点
+Compat layer that re-exports the concrete NodeSelector implementation.
 """
 
-# TODO: 实现二级节点选择逻辑
-# - LRP 分数：放置后剩余资源越多越高
-# - BRA 分数：放置后三维负载越均衡越高
-# - 合成得分：score_{i,j} = λ·scoreL_{i,j} + (1-λ)·scoreB_{i,j}
+from core.scheduling.node_selector import NodeScore, NodeSelector
 
-__all__ = []
-
+__all__ = ["NodeSelector", "NodeScore"]
