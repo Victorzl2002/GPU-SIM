@@ -15,7 +15,7 @@ SCENARIO = ExperimentProfile(
     simulation=SimulationConfig(
         delta_t=0.02,
         duration=320.0,
-        scheduling_interval=8,
+        scheduling_interval=6,
         scheduling=SchedulingConfig(static_partition=True, enable_sharing=False, oversubscription=1.0),
         sandbox=SandboxConfig(
             enable_memory_gate=False,
@@ -24,6 +24,6 @@ SCENARIO = ExperimentProfile(
             slo_guard=SLOGuardConfig(enabled=False),
         ),
     ),
-    num_tasks=45,
+    num_tasks=120,
     arrival_mode="burst",
 )

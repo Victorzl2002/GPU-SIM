@@ -25,9 +25,9 @@ SCENARIOS: Dict[str, ExperimentProfile] = {
 }
 
 
-def run(name: str, seed: int = 2025):
+def run(name: str, seed: int = 2025, return_tasks: bool = False, **overrides):
     """按名称查找场景并运行仿真，方便脚本化调用。"""
     scenario = SCENARIOS.get(name)
     if scenario is None:
         raise KeyError(f"未知场景: {name}")
-    return scenario.run(seed=seed)
+    return scenario.run(seed=seed, return_tasks=return_tasks, **overrides)

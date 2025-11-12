@@ -11,7 +11,7 @@ import random
 
 from core.vgpu_model.resource_model.vgpu_resource import VGPUResource
 
-from .task import Task
+from .task import Task, ResourceFluctuation
 
 
 @dataclass
@@ -38,9 +38,9 @@ class WorkloadGenerator:
         if mode == "poisson":
             return self._rng.uniform(0, duration)
         if mode == "burst":
-            if self._rng.random() < 0.3:
-                return self._rng.uniform(0, duration * 0.2)
-            return self._rng.uniform(duration * 0.2, duration)
+            if self._rng.random() < 0.6:
+                return self._rng.uniform(0, duration * 0.1)
+            return self._rng.uniform(duration * 0.1, duration)
         if mode == "wave":
             t = self._rng.uniform(0, 1)
             return duration * ((1 - math.cos(2 * math.pi * t)) / 2)
@@ -58,7 +58,17 @@ class WorkloadGenerator:
         for idx in range(num_tasks):
             profile = profiles[idx % len(profiles)]
             arrival_time = self._sample_arrival(duration, arrival_mode)
-            ideal_duration = profile.workload / max(profile.demand.compute, 1e-6)
+            if "heavy" in profile.name:
+                arrival_time = self._rng.uniform(0, duration * 0.05)
+            ideal_duration = profile.workload / max(profile.demand.compute, 1e-6)* 0.5
+            fluctuation = ResourceFluctuation(
+                compute_amp=self._rng.uniform(0.05, 0.2),
+                memory_amp=self._rng.uniform(0.03, 0.15),
+                bandwidth_amp=self._rng.uniform(0.03, 0.2),
+                period=self._rng.uniform(10.0, 40.0),
+                spike_probability=self._rng.uniform(0.005, 0.02),
+                spike_amp=self._rng.uniform(0.1, 0.35),
+            )
             task = Task(
                 task_id=f"{profile.name}-{idx}",
                 demand=VGPUResource(
@@ -76,6 +86,7 @@ class WorkloadGenerator:
                 k_min=profile.k_min,
                 k_max=profile.k_max,
                 ideal_duration=ideal_duration,
+                fluctuation=fluctuation,
             )
             tasks.append(task)
         tasks.sort(key=lambda t: t.arrival_time)

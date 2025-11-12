@@ -80,7 +80,8 @@ class SimulationEngine:
                 if task.node_id is None:
                     continue
                 slo_pressure = self._slo_pressure(task, current_time)
-                decision = self.sandbox.apply(task, task.quota, self.config.delta_t, slo_pressure)
+                dynamic_demand = task.current_demand(current_time)
+                decision = self.sandbox.apply(task, dynamic_demand, task.quota, self.config.delta_t, slo_pressure)
                 for limiter_name, triggered in decision.limited.items():
                     if triggered:
                         task.record_limiter_event(limiter_name)

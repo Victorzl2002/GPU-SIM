@@ -41,11 +41,11 @@ class VGPUResource:
             raise ValueError("资源值不能为负数")
         
         # 资源合理性验证
-        if self.memory > 1000:  # 显存超过1TB不合理
+        if self.memory > 10000:  # 显存超过10TB视为异常
             raise ValueError(f"显存大小不合理: {self.memory}GB")
-        if self.compute > 1000:  # 算力超过1000 TFLOPS不合理
+        if self.compute > 10000:  # 算力超过10,000 TFLOPS不合理
             raise ValueError(f"算力大小不合理: {self.compute} TFLOPS")
-        if self.bandwidth > 10000:  # 带宽超过10TB/s不合理
+        if self.bandwidth > 100000:  # 带宽超过100TB/s不合理
             raise ValueError(f"带宽大小不合理: {self.bandwidth} GB/s")
     
     def to_dict(self) -> Dict[str, Any]:

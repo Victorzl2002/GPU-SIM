@@ -4,9 +4,10 @@
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 from statistics import mean, pstdev
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from core.cluster.node import ClusterNode
 from core.vgpu_model.resource_model.vgpu_resource import VGPUResource
@@ -38,6 +39,18 @@ class MetricCollector:
 
     def record_limiter(self, limiter_name: str) -> None:
         self.limiter_events[limiter_name] = self.limiter_events.get(limiter_name, 0) + 1
+
+    def _percentile(self, samples: List[float], q: float) -> Optional[float]:
+        if not samples:
+            return None
+        if len(samples) == 1:
+            return samples[0]
+        pos = (len(samples) - 1) * q
+        lower = math.floor(pos)
+        upper = math.ceil(pos)
+        if lower == upper:
+            return samples[int(pos)]
+        return samples[lower] + (samples[upper] - samples[lower]) * (pos - lower)
 
     def _utilization(self, samples: List[VGPUResource], capacity: VGPUResource) -> Dict[str, float]:
         if not samples:
@@ -75,11 +88,44 @@ class MetricCollector:
 
         slo_met = [task.slo_met for task in self.completed_tasks if task.slo_met is not None]
         interference = [task.interference_ratio for task in self.completed_tasks if task.interference_ratio]
+        durations: List[float] = []
+        ir_values: List[float] = []
+        slo_violations = 0
+        ir_over_1_5 = 0
+        ir_over_2 = 0
+        limited_tasks = 0
+        for task in self.completed_tasks:
+            if task.completion_time is not None:
+                start = task.start_time if task.start_time is not None else task.arrival_time
+                if start is not None:
+                    durations.append(task.completion_time - start)
+            ir = task.interference_ratio
+            if ir is not None:
+                ir_values.append(ir)
+                if ir > 1.5:
+                    ir_over_1_5 += 1
+                if ir > 2.0:
+                    ir_over_2 += 1
+            if task.slo_met is False:
+                slo_violations += 1
+            if sum(task.limiter_events.values()) > 0:
+                limited_tasks += 1
+        durations.sort()
+        ir_values.sort()
+        total_ir = len(ir_values) or 1
 
         summary = {
             "nodes": node_metrics,
             "slo_rate": sum(1 for met in slo_met if met) / len(slo_met) if slo_met else 0.0,
             "avg_interference": mean(interference) if interference else 0.0,
             "limiter_events": self.limiter_events,
+            "duration_p95": self._percentile(durations, 0.95),
+            "duration_p99": self._percentile(durations, 0.99),
+            "ir_p95": self._percentile(ir_values, 0.95),
+            "ir_p99": self._percentile(ir_values, 0.99),
+            "slo_violations": slo_violations,
+            "ir_over_1_5_ratio": ir_over_1_5 / total_ir,
+            "ir_over_2_ratio": ir_over_2 / total_ir,
+            "limited_tasks": limited_tasks,
         }
         return summary

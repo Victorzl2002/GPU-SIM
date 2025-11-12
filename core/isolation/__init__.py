@@ -23,9 +23,9 @@ class APISandbox:
         self.bandwidth_gate = BandwidthTokenBucket(config.bandwidth_refill_rate)
         self.compute_gate = ComputeThrottle(config.compute_ceiling)
 
-    def apply(self, task: Task, quota: VGPUResource, delta_t: float, slo_pressure: bool) -> SandboxDecision:
+    def apply(self, task: Task, demand: VGPUResource, quota: VGPUResource, delta_t: float, slo_pressure: bool) -> SandboxDecision:
         """执行一次限流决策，返回实际可用资源与限流标记。"""
-        desired = task.demand
+        desired = demand
         limited = {"memory": False, "bandwidth": False, "compute": False}
 
         if self.config.enable_memory_gate:
