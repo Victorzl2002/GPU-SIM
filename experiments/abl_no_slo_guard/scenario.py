@@ -23,7 +23,7 @@ SCENARIO = ExperimentProfile(
             enable_compute_gate=True,
             slo_guard=SLOGuardConfig(enabled=False),
             bandwidth_refill_rate=1.0,
-            compute_ceiling=1.2,
+            compute_ceiling=1.4,
         ),
     ),
     num_tasks=150,

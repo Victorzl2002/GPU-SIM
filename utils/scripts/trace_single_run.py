@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Wrapper delegating to experiment_cli compare-ir subcommand.
+Wrapper delegating to experiment_cli trace subcommand.
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ if str(ROOT) not in sys.path:
 def main() -> None:
     from run_experiment import main as run_main
 
-    argv = ["compare-ir", *sys.argv[1:]]
+    argv = ["trace", *sys.argv[1:]]
     run_main(argv)
 
 

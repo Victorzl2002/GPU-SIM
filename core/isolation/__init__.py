@@ -28,17 +28,21 @@ class APISandbox:
         desired = demand
         limited = {"memory": False, "bandwidth": False, "compute": False}
 
-        if self.config.enable_memory_gate:
+        threshold = max(self.config.limit_threshold, 1.0)
+
+        if self.config.enable_memory_gate and desired.memory > quota.memory * threshold:
             mem = self.memory_gate.apply(desired.memory, quota.memory)
             limited["memory"] = mem.limited
         else:
             mem = self.memory_gate.apply(desired.memory, desired.memory)
-        if self.config.enable_bandwidth_gate:
+
+        if self.config.enable_bandwidth_gate and desired.bandwidth > quota.bandwidth * threshold:
             bw = self.bandwidth_gate.apply(task.task_id, desired.bandwidth, quota.bandwidth, delta_t)
             limited["bandwidth"] = bw.limited
         else:
             bw = self.bandwidth_gate.apply(task.task_id, desired.bandwidth, desired.bandwidth, delta_t)
-        if self.config.enable_compute_gate:
+
+        if self.config.enable_compute_gate and desired.compute > quota.compute * threshold:
             if self.config.slo_guard.enabled:
                 if slo_pressure:
                     self.compute_gate.boost(task.task_id, amount=0.05, max_boost=self.config.slo_guard.max_boost)
@@ -47,6 +51,11 @@ class APISandbox:
             compute = self.compute_gate.apply(task.task_id, desired.compute, quota.compute)
             limited["compute"] = compute.limited
         else:
+            if self.config.enable_compute_gate and self.config.slo_guard.enabled:
+                if slo_pressure:
+                    self.compute_gate.boost(task.task_id, amount=0.05, max_boost=self.config.slo_guard.max_boost)
+                else:
+                    self.compute_gate.decay(task.task_id, decay=self.config.slo_guard.decay)
             compute = self.compute_gate.apply(task.task_id, desired.compute, desired.compute)
 
         usage = VGPUResource(

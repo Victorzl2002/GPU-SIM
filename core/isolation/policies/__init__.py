@@ -25,3 +25,4 @@ class SandboxConfig:
     slo_guard: SLOGuardConfig = field(default_factory=SLOGuardConfig)
     bandwidth_refill_rate: float = 1.0
     compute_ceiling: float = 1.0
+    limit_threshold: float = 1.05  # demand 低于阈值时不触发限流

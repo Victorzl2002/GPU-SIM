@@ -41,6 +41,13 @@ class WorkloadGenerator:
             if self._rng.random() < 0.6:
                 return self._rng.uniform(0, duration * 0.1)
             return self._rng.uniform(duration * 0.1, duration)
+        if mode == "poisson_burst":
+            """大部分任务按照泊松分布随机到达，少部分集中在中段形成突发。"""
+            if self._rng.random() < 0.7:
+                return self._rng.uniform(0, duration)
+            mid_start = duration * 0.45
+            mid_end = duration * 0.55
+            return self._rng.uniform(mid_start, mid_end)
         if mode == "wave":
             t = self._rng.uniform(0, 1)
             return duration * ((1 - math.cos(2 * math.pi * t)) / 2)
@@ -59,8 +66,13 @@ class WorkloadGenerator:
             profile = profiles[idx % len(profiles)]
             arrival_time = self._sample_arrival(duration, arrival_mode)
             if "heavy" in profile.name:
-                arrival_time = self._rng.uniform(0, duration * 0.05)
-            ideal_duration = profile.workload / max(profile.demand.compute, 1e-6)* 0.5
+                # Heavy 任务集中在仿真中段，制造短时突发。
+                burst_span = max(duration * 0.05, 1e-3)
+                mid_point = duration * 0.5
+                start = max(0.0, mid_point - burst_span)
+                end = min(duration, mid_point + burst_span)
+                arrival_time = self._rng.uniform(start, end if end > start else start + 1e-6)
+            ideal_duration = profile.workload / max(profile.demand.compute, 1e-6)*0.5
             fluctuation = ResourceFluctuation(
                 compute_amp=self._rng.uniform(0.05, 0.2),
                 memory_amp=self._rng.uniform(0.03, 0.15),

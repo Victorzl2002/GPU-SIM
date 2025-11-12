@@ -1,6 +1,4 @@
-"""
-API 沙盒中用到的三组限流器实现。
-"""
+
 
 from __future__ import annotations
 
@@ -58,7 +56,7 @@ class ComputeThrottle:
 
     def apply(self, task_id: str, demand: float, quota: float) -> LimiterOutput:
         scale = min(self._scale(task_id), self.ceiling)
-        allowed = min(demand, quota * scale)
+        allowed = min(demand, quota)
         return LimiterOutput(value=allowed, limited=allowed + 1e-9 < demand)
 
     def boost(self, task_id: str, amount: float, max_boost: float) -> None:
