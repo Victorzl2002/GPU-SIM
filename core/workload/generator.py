@@ -65,22 +65,33 @@ class WorkloadGenerator:
         for idx in range(num_tasks):
             profile = profiles[idx % len(profiles)]
             arrival_time = self._sample_arrival(duration, arrival_mode)
-            if "heavy" in profile.name:
-                # Heavy 任务集中在仿真中段，制造短时突发。
-                burst_span = max(duration * 0.05, 1e-3)
-                mid_point = duration * 0.5
+            is_heavy = "heavy" in profile.name.lower()
+            if is_heavy:
+                # Heavy 任务集中在仿真前中段形成突发，确保后续任务还能陆续到达并感受到干扰。
+                burst_span = max(duration * 0.02, 1e-3)
+                mid_point = duration * 0.35
                 start = max(0.0, mid_point - burst_span)
                 end = min(duration, mid_point + burst_span)
                 arrival_time = self._rng.uniform(start, end if end > start else start + 1e-6)
-            ideal_duration = profile.workload / max(profile.demand.compute, 1e-6)*0.5
-            fluctuation = ResourceFluctuation(
-                compute_amp=self._rng.uniform(0.05, 0.2),
-                memory_amp=self._rng.uniform(0.03, 0.15),
-                bandwidth_amp=self._rng.uniform(0.03, 0.2),
-                period=self._rng.uniform(10.0, 40.0),
-                spike_probability=self._rng.uniform(0.005, 0.02),
-                spike_amp=self._rng.uniform(0.1, 0.35),
-            )
+            ideal_duration = profile.workload / max(profile.demand.compute, 1e-6)
+            if is_heavy:
+                fluctuation = ResourceFluctuation(
+                    compute_amp=self._rng.uniform(0.4, 0.6),
+                    memory_amp=self._rng.uniform(0.3, 0.5),
+                    bandwidth_amp=self._rng.uniform(0.4, 0.6),
+                    period=self._rng.uniform(6.0, 12.0),
+                    spike_probability=self._rng.uniform(0.15, 0.25),
+                    spike_amp=self._rng.uniform(1.1, 1.4),
+                )
+            else:
+                fluctuation = ResourceFluctuation(
+                    compute_amp=self._rng.uniform(0.005, 0.02),
+                    memory_amp=self._rng.uniform(0.005, 0.02),
+                    bandwidth_amp=self._rng.uniform(0.005, 0.02),
+                    period=self._rng.uniform(25.0, 70.0),
+                    spike_probability=self._rng.uniform(0.0, 0.005),
+                    spike_amp=self._rng.uniform(0.02, 0.08),
+                )
             task = Task(
                 task_id=f"{profile.name}-{idx}",
                 demand=VGPUResource(

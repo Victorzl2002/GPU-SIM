@@ -66,6 +66,19 @@ class ClusterNode:
         self.task_quotas[task_id] = quota
         return True
 
+    def update_allocation(self, task_id: str, usage: VGPUResource) -> None:
+        """用运行期的实际用量刷新账面配额，驱动动态共享。"""
+        if task_id not in self.task_quotas:
+            return
+        self.task_quotas[task_id] = VGPUResource(
+            compute=usage.compute,
+            memory=usage.memory,
+            bandwidth=usage.bandwidth,
+            resource_id=usage.resource_id,
+            vendor=usage.vendor,
+            model=usage.model,
+        )
+
     def release(self, task_id: str) -> Optional[VGPUResource]:
         return self.task_quotas.pop(task_id, None)
 

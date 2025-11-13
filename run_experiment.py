@@ -541,15 +541,22 @@ def plot_cdf(series: List[tuple], output_path: Path) -> Optional[Path]:
 
     fig, ax = plt.subplots(figsize=(7, 5))
     colors = ["#4F81BD", "#C0504D", "#9BBB59", "#8064A2", "#4BACC6"]
-    for idx, (name, values) in enumerate(series):
+    for idx, (name, values, summary) in enumerate(series):
         if not values:
             continue
-        x, y = build_cdf(sorted(values))
-        ax.step(x, y, where="post", label=name, color=colors[idx % len(colors)])
+        values_sorted = sorted(values)
+        x, y = build_cdf(values_sorted)
+        total = len(values_sorted)
+        if total == 0:
+            continue
+        ir_over_1_25 = sum(1 for v in values_sorted if v > 1.25) / total * 100
+        ir_over_1_5 = sum(1 for v in values_sorted if v > 1.5) / total * 100
+        label = f"{name} (IR>1.25 {ir_over_1_25:.1f}%, >1.5 {ir_over_1_5:.1f}%)"
+        ax.step(x, y, where="post", label=label, color=colors[idx % len(colors)])
     ax.set_xlabel("Interference Ratio")
     ax.set_ylabel("CDF")
     ax.set_title("IR CDF")
-    ax.legend()
+    ax.legend(fontsize=8, loc="lower right", framealpha=0.9)
     ax.grid(True, linestyle="--", alpha=0.5)
     fig.tight_layout()
     fig.savefig(output_path, dpi=150)
@@ -585,9 +592,16 @@ def cmd_report(args: argparse.Namespace) -> None:
 
         hist_counter = bucket_ir(engine.metrics.completed_tasks, args.hist_bucket)
         hist = [(float(f"{bucket:.3f}"), count) for bucket, count in sorted(hist_counter.items())]
+
+
+
+        # ir_values = collect_ir(engine.metrics.completed_tasks)
+        # if ir_values:
+        #     cdf_series.append((name, ir_values, summary))
+
         if name in {"A1-baseline", "A3-sandbox"}:
             ir_values = collect_ir(engine.metrics.completed_tasks)
-            cdf_series.append((name, ir_values))
+            cdf_series.append((name, ir_values, summary))
 
         report = {
             "scenario": name,

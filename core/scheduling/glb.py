@@ -85,3 +85,12 @@ class GLBScheduler:
         node = self.node_index.get(task.node_id)
         if node:
             node.release(task.task_id)
+
+    def update_allocation(self, task: Task, usage: VGPUResource) -> None:
+        """将运行期实际用量反馈到节点配额账本，反映真实占用。"""
+        if task.node_id is None:
+            return
+        node = self.node_index.get(task.node_id)
+        if not node:
+            return
+        node.update_allocation(task.task_id, usage)

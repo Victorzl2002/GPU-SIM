@@ -1,13 +1,15 @@
 """
-离散时间仿真引擎，实现“到达→调度→沙盒→推进→采样”的循环。
+离散时间仿真引擎，实现“到达→调度→沙盒→仲裁→推进→采样”的循环。
 """
 
 from __future__ import annotations
 
-from typing import Dict, List
+from collections import defaultdict
+from typing import Dict, List, Tuple
 
 from core.cluster.node import ClusterNode
 from core.isolation import APISandbox
+from core.isolation.api_model import SandboxDecision
 from core.workload.task import Task, TaskState
 from core.scheduling.glb import GLBScheduler
 from evaluation.metrics.collector import MetricCollector
@@ -56,6 +58,30 @@ class SimulationEngine:
             usage = node_usage.get(node.node_id, self._zero_usage(node.node_id))
             self.metrics.record_node_usage(node.node_id, usage)
 
+    def _enforce_node_capacity(
+        self,
+        node_id: str,
+        requests: List[Tuple[Task, SandboxDecision]],
+    ) -> List[Tuple[Task, VGPUResource]]:
+        """按节点总容量裁剪本 tick 的资源授予，模拟运行期仲裁。"""
+        node = self.node_lookup[node_id]
+        remaining = node.total_capacity()
+        allocations: List[Tuple[Task, VGPUResource]] = []
+        # 重负载优先，突出“heavy 抢占→轻量排队”的现象
+        sorted_requests = sorted(requests, key=lambda item: item[1].usage.compute, reverse=True)
+        for task, decision in sorted_requests:
+            granted = VGPUResource(
+                compute=min(decision.usage.compute, remaining.compute),
+                memory=min(decision.usage.memory, remaining.memory),
+                bandwidth=min(decision.usage.bandwidth, remaining.bandwidth),
+                resource_id=decision.usage.resource_id,
+                vendor=decision.usage.vendor,
+                model=decision.usage.model,
+            )
+            allocations.append((task, granted))
+            remaining = remaining - granted
+        return allocations
+
     def run(self) -> Dict[str, Dict[str, float]]:
         """执行完整仿真并返回指标摘要。"""
         total_ticks = int(self.config.duration / self.config.delta_t)
@@ -73,7 +99,7 @@ class SimulationEngine:
                     task.assign(allocation.node_id, allocation.quota, current_time)
                     self.running_tasks[task.task_id] = task
 
-            node_usage: Dict[str, VGPUResource] = {}
+            node_requests: Dict[str, List[Tuple[Task, SandboxDecision]]] = defaultdict(list)
             for task in list(self.running_tasks.values()):
                 if task.state not in {TaskState.RUNNING, TaskState.SCHEDULED} or not task.quota:
                     continue
@@ -86,22 +112,29 @@ class SimulationEngine:
                     if triggered:
                         task.record_limiter_event(limiter_name)
                         self.metrics.record_limiter(limiter_name)
-                task.update_progress(decision.usage.compute, self.config.delta_t)
-                node_usage.setdefault(task.node_id, self._zero_usage(task.node_id))
-                node_usage[task.node_id] = node_usage[task.node_id] + decision.usage
+                node_requests[task.node_id].append((task, decision))
 
-                if task.state == TaskState.COMPLETED:
-                    task.finalize(current_time)
-                    self.metrics.record_task_completion(task)
-                    self.scheduler.release(task)
-                    self.sandbox.release(task)
-                    self.running_tasks.pop(task.task_id, None)
-                elif task.start_time and current_time - task.start_time > task.deadline * 1.5:
-                    task.mark_dropped(current_time)
-                    self.metrics.record_task_completion(task)
-                    self.scheduler.release(task)
-                    self.sandbox.release(task)
-                    self.running_tasks.pop(task.task_id, None)
+            node_usage: Dict[str, VGPUResource] = {}
+            for node_id, requests in node_requests.items():
+                node_usage.setdefault(node_id, self._zero_usage(node_id))
+                for task, granted in self._enforce_node_capacity(node_id, requests):
+                    # 将最终授予的资源反馈给调度器/任务，模拟动态回收。
+                    self.scheduler.update_allocation(task, granted)
+                    task.update_progress(granted.compute, self.config.delta_t)
+                    node_usage[node_id] = node_usage[node_id] + granted
+
+                    if task.state == TaskState.COMPLETED:
+                        task.finalize(current_time)
+                        self.metrics.record_task_completion(task)
+                        self.scheduler.release(task)
+                        self.sandbox.release(task)
+                        self.running_tasks.pop(task.task_id, None)
+                    elif task.start_time and current_time - task.start_time > task.deadline * 1.5:
+                        task.mark_dropped(current_time)
+                        self.metrics.record_task_completion(task)
+                        self.scheduler.release(task)
+                        self.sandbox.release(task)
+                        self.running_tasks.pop(task.task_id, None)
 
             self._record_usage(node_usage)
 

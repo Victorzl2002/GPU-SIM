@@ -99,7 +99,14 @@ DEFAULT_PROFILES = [
     ),
     TaskProfile(
         name="llm-heavy",
-        demand=VGPUResource(compute=240, memory=80, bandwidth=1500, resource_id="llm-heavy", vendor="", model=""),
+        demand=VGPUResource(
+            compute=210,
+            memory=48,
+            bandwidth=1100,
+            resource_id="llm-heavy",
+            vendor="",
+            model="",
+        ),
         workload=7200,    # 理想完成时间 30s
         deadline=60.0,
         compatibility={"nvidia"},

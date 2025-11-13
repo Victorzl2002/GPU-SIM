@@ -1,6 +1,3 @@
-"""
-A1：无 API 沙盒，仅 GLB 调度的基线。
-"""
 
 from core.isolation.policies import SandboxConfig, SLOGuardConfig
 from core.scheduling.config import SchedulingConfig
@@ -13,7 +10,7 @@ SCENARIO = ExperimentProfile(
     name="A1-baseline",
     description="无沙盒 + 共享池，仅测试GLB调度对利用率与干扰的影响",
     simulation=SimulationConfig(
-        delta_t=0.02,
+        delta_t=0.01,
         duration=320.0,
         scheduling_interval=4,
         scheduling=SchedulingConfig(static_partition=False, enable_sharing=True, oversubscription=1.05),
@@ -24,6 +21,6 @@ SCENARIO = ExperimentProfile(
             slo_guard=SLOGuardConfig(enabled=False),
         ),
     ),
-    num_tasks=120,
-    arrival_mode="poisson",
+    num_tasks=190,
+    arrival_mode="poisson_burst",
 )
