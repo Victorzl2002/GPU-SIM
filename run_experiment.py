@@ -215,8 +215,8 @@ def cmd_plot_ir(args: argparse.Namespace) -> None:
             f"Limiter tasks={limit_info['limited']}/{limit_info['total']}"
         )
 
-    ax.set_xlabel("Interference Ratio")
-    ax.set_ylabel("CDF")
+    ax.set_xlabel("Interference Ratio (ratio)")
+    ax.set_ylabel("CDF (ratio)")
     ax.set_title("IR CDF under stress load")
     ax.legend()
     ax.grid(True, linestyle="--", alpha=0.5)
@@ -513,6 +513,7 @@ def plot_histogram(name: str, hist: List[tuple], output_dir: Path, bucket_size: 
     except ImportError as exc:
         print(f"[WARN] Matplotlib 未安装，无法绘制 {name} 的 IR 直方图: {exc}")
         return None
+    _configure_cn_font(plt)
 
     if not hist:
         return None
@@ -538,6 +539,7 @@ def plot_cdf(series: List[tuple], output_path: Path) -> Optional[Path]:
     except ImportError as exc:
         print(f"[WARN] Matplotlib 未安装，无法绘制 IR CDF 对比图: {exc}")
         return None
+    _configure_cn_font(plt)
 
     fig, ax = plt.subplots(figsize=(7, 5))
     colors = ["#4F81BD", "#C0504D", "#9BBB59", "#8064A2", "#4BACC6"]
@@ -565,11 +567,134 @@ def plot_cdf(series: List[tuple], output_path: Path) -> Optional[Path]:
     return output_path
 
 
+def _configure_cn_font(plt_module) -> None:
+    """为 matplotlib 设置常见中文字体，避免中文标题变成方块。"""
+    candidates = [
+        "SimHei",
+        "PingFang SC",
+        "Heiti SC",
+        "Songti SC",
+        "Microsoft YaHei",
+        "Noto Sans CJK SC",
+        "WenQuanYi Micro Hei",
+        "Arial Unicode MS",
+    ]
+    sans_list = list(plt_module.rcParams.get("font.sans-serif", []))
+    for font in candidates:
+        if font not in sans_list:
+            sans_list.append(font)
+    plt_module.rcParams["font.sans-serif"] = sans_list
+    plt_module.rcParams["font.family"] = ["sans-serif"]
+    plt_module.rcParams["axes.unicode_minus"] = False
+
+
+def _avg_compute_util(summary: Dict[str, Dict[str, Dict[str, float]]]) -> float:
+    nodes = summary.get("nodes", {})
+    if not nodes:
+        return 0.0
+    total = sum(
+        node.get("utilization", {}).get("compute", 0.0)
+        for node in nodes.values()
+    )
+    return total / len(nodes)
+
+
+def plot_summary_bars(records: List[Dict[str, Dict]], output_dir: Path) -> None:
+    if not records:
+        return
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError as exc:
+        print(f"[WARN] Matplotlib 未安装，无法绘制汇总图: {exc}")
+        return
+    _configure_cn_font(plt)
+
+    metrics = [
+        ("SLO rate", lambda s: s.get("slo_rate", 0.0), "slo_rate.png"),
+        ("Average compute utilization", _avg_compute_util, "compute_util.png"),
+    ]
+
+    x = list(range(len(records)))
+    labels = [rec["name"] for rec in records]
+
+    for title, extractor, filename in metrics:
+        values = [extractor(rec["summary"]) for rec in records]
+        fig, ax = plt.subplots(figsize=(6, 4))
+        ax.plot(x, values, marker="o", color="#4F81BD")
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels, rotation=20)
+        ax.set_xlabel("Scenario")
+        ax.set_ylabel(f"{title} (ratio)")
+        ax.set_ylim(0, max(1.0, max(values) * 1.1))
+        ax.set_title(title)
+        ax.grid(True, linestyle="--", alpha=0.4)
+        fig.tight_layout()
+        path = output_dir / filename
+        fig.savefig(path, dpi=160)
+        plt.close(fig)
+        print(f"  {title} 图: {path}")
+
+
+def plot_drop_and_limiter(records: List[Dict[str, Dict]], output_dir: Path) -> None:
+    if not records:
+        return
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError as exc:
+        print(f"[WARN] Matplotlib 未安装，无法绘制 drop/limiter 图: {exc}")
+        return
+    _configure_cn_font(plt)
+
+    names = [rec["name"] for rec in records]
+    drop_values = [rec.get("drop_rate", 0.0) for rec in records]
+
+    # Drop rate line
+    fig, ax = plt.subplots(figsize=(6, 4))
+    ax.plot(range(len(names)), drop_values, marker="o", color="#C0504D")
+    ax.set_xticks(range(len(names)))
+    ax.set_xticklabels(names, rotation=20)
+    ax.set_xlabel("Scenario")
+    ax.set_ylabel("Drop rate (ratio)")
+    ax.set_ylim(0, max(1.0, max(drop_values) * 1.1))
+    ax.set_title("Task drop rate")
+    ax.grid(True, linestyle="--", alpha=0.4)
+    fig.tight_layout()
+    drop_path = output_dir / "drop_rate.png"
+    fig.savefig(drop_path, dpi=160)
+    plt.close(fig)
+    print(f"  Drop rate 图: {drop_path}")
+
+    # Limiter stacked bar
+    compute_events = [rec.get("limiter_events", {}).get("compute", 0.0) for rec in records]
+    mem_events = [rec.get("limiter_events", {}).get("memory", 0.0) for rec in records]
+    bw_events = [rec.get("limiter_events", {}).get("bandwidth", 0.0) for rec in records]
+
+    fig, ax = plt.subplots(figsize=(6, 4))
+    x = range(len(names))
+    ax.bar(x, mem_events, label="memory", color="#4F81BD")
+    ax.bar(x, compute_events, bottom=mem_events, label="compute", color="#9BBB59")
+    bottom_bw = [m + c for m, c in zip(mem_events, compute_events)]
+    ax.bar(x, bw_events, bottom=bottom_bw, label="bandwidth", color="#C0504D")
+    ax.set_xticks(x)
+    ax.set_xticklabels(names, rotation=20)
+    ax.set_xlabel("Scenario")
+    ax.set_ylabel("Limiter triggers (count)")
+    ax.set_title("Limiter events per scenario")
+    ax.legend()
+    ax.grid(True, axis="y", linestyle="--", alpha=0.4)
+    fig.tight_layout()
+    limiter_path = output_dir / "limiter_events.png"
+    fig.savefig(limiter_path, dpi=160)
+    plt.close(fig)
+    print(f"  Limiter events 图: {limiter_path}")
+
+
 def cmd_report(args: argparse.Namespace) -> None:
     scenarios = args.scenario or sorted(SCENARIOS.keys())
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     cdf_series: List[tuple] = []
+    summary_records: List[Dict[str, Dict]] = []
 
     for name in scenarios:
         scenario = SCENARIOS[name]
@@ -590,6 +715,13 @@ def cmd_report(args: argparse.Namespace) -> None:
         engine = SimulationEngine(nodes, tasks, sim_config)
         summary = engine.run()
 
+        completed = engine.metrics.completed_tasks
+        total_completed = len(completed) or 1
+        drop_count = sum(1 for task in completed if task.state == TaskState.DROPPED)
+        drop_rate = drop_count / total_completed
+        summary["drop_rate"] = drop_rate
+        summary["drop_count"] = drop_count
+
         hist_counter = bucket_ir(engine.metrics.completed_tasks, args.hist_bucket)
         hist = [(float(f"{bucket:.3f}"), count) for bucket, count in sorted(hist_counter.items())]
 
@@ -599,9 +731,15 @@ def cmd_report(args: argparse.Namespace) -> None:
         # if ir_values:
         #     cdf_series.append((name, ir_values, summary))
 
-        if name in {"A1-baseline", "A3-sandbox"}:
-            ir_values = collect_ir(engine.metrics.completed_tasks)
+        ir_values = collect_ir(engine.metrics.completed_tasks)
+        if ir_values:
             cdf_series.append((name, ir_values, summary))
+        summary_records.append({
+            "name": name,
+            "summary": summary,
+            "drop_rate": drop_rate,
+            "limiter_events": summary.get("limiter_events", {}),
+        })
 
         report = {
             "scenario": name,
@@ -638,6 +776,8 @@ def cmd_report(args: argparse.Namespace) -> None:
 
     if not args.no_plot and cdf_series:
         plot_cdf(cdf_series, output_dir / "ir_cdf.png")
+        plot_summary_bars(summary_records, output_dir)
+        plot_drop_and_limiter(summary_records, output_dir)
 
 
 # ---------------------------------------------------------------------------

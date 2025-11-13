@@ -58,6 +58,33 @@ class SimulationEngine:
             usage = node_usage.get(node.node_id, self._zero_usage(node.node_id))
             self.metrics.record_node_usage(node.node_id, usage)
 
+    def _reschedule_on_reclaimed(self, current_time: float) -> None:
+        """节点释放容量后，立即尝试调度新的等待任务。"""
+        waiting = [
+            task
+            for task in self.tasks
+            if task.state == TaskState.WAITING and task.is_arrived(current_time)
+        ]
+        if not waiting:
+            return
+        epsilon = 1e-6
+        has_capacity = False
+        for node in self.nodes:
+            available = node.available_capacity()
+            if (
+                available.compute > epsilon
+                or available.memory > epsilon
+                or available.bandwidth > epsilon
+            ):
+                has_capacity = True
+                break
+        if not has_capacity:
+            return
+        for allocation in self.scheduler.schedule(waiting):
+            task = self.task_index[allocation.task_id]
+            task.assign(allocation.node_id, allocation.quota, current_time)
+            self.running_tasks[task.task_id] = task
+
     def _enforce_node_capacity(
         self,
         node_id: str,
@@ -137,6 +164,7 @@ class SimulationEngine:
                         self.running_tasks.pop(task.task_id, None)
 
             self._record_usage(node_usage)
+            self._reschedule_on_reclaimed(current_time)
 
         # Finalize remaining tasks
         for task in self.running_tasks.values():

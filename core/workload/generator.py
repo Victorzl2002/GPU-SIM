@@ -83,6 +83,15 @@ class WorkloadGenerator:
                     spike_probability=self._rng.uniform(0.15, 0.25),
                     spike_amp=self._rng.uniform(1.1, 1.4),
                 )
+
+                # fluctuation = ResourceFluctuation(
+                #     compute_amp=self._rng.uniform(0.5, 0.8),
+                #     memory_amp=self._rng.uniform(0.3, 0.5),
+                #     bandwidth_amp=self._rng.uniform(0.4, 0.6),
+                #     period=self._rng.uniform(6.0, 12.0),
+                #     spike_probability=self._rng.uniform(0.15, 0.4),
+                #     spike_amp=self._rng.uniform(1.1, 1.6),
+                # )
             else:
                 fluctuation = ResourceFluctuation(
                     compute_amp=self._rng.uniform(0.005, 0.02),

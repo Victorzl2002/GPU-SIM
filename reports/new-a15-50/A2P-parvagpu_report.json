@@ -1,0 +1,2374 @@
+{
+  "scenario": "A2P-parvagpu",
+  "description": "固定切片 + 局部共享 (ParvaGPU 近似)，无API沙盒",
+  "params": {
+    "seed": 7,
+    "duration": 320.0,
+    "num_tasks": 50,
+    "arrival_mode": "poisson_burst",
+    "heavy_mode": "burst"
+  },
+  "summary": {
+    "nodes": {
+      "nv-node-1": {
+        "utilization": {
+          "compute": 0.4612296476402007,
+          "memory": 0.5142588637405819,
+          "bandwidth": 0.4265649682847322
+        },
+        "stability": {
+          "compute": 0.3469860404582468,
+          "memory": 0.33954107045764526,
+          "bandwidth": 0.3343227694871562
+        }
+      },
+      "nv-node-2": {
+        "utilization": {
+          "compute": 0.4659609943466023,
+          "memory": 0.5116197608946592,
+          "bandwidth": 0.4427216628501876
+        },
+        "stability": {
+          "compute": 0.3828467209709106,
+          "memory": 0.38112699215614204,
+          "bandwidth": 0.37876110847794664
+        }
+      },
+      "asc-node-1": {
+        "utilization": {
+          "compute": 0.19566626309444904,
+          "memory": 0.2918173986643995,
+          "bandwidth": 0.21010198090910612
+        },
+        "stability": {
+          "compute": 0.18462550261457453,
+          "memory": 0.2761757105708672,
+          "bandwidth": 0.19880099906588483
+        }
+      },
+      "asc-node-2": {
+        "utilization": {
+          "compute": 0.19966189844731305,
+          "memory": 0.276628968806023,
+          "bandwidth": 0.21265332979139936
+        },
+        "stability": {
+          "compute": 0.2954870481128558,
+          "memory": 0.4049645721491074,
+          "bandwidth": 0.3134624984871169
+        }
+      }
+    },
+    "slo_rate": 0.92,
+    "avg_interference": 1.0365226666666667,
+    "limiter_events": {
+      "compute": 0.0,
+      "memory": 44421.0,
+      "bandwidth": 0.0
+    },
+    "duration_p95": 44.451999999999984,
+    "duration_p99": 51.07599999999999,
+    "ir_p95": 1.4403958333333324,
+    "ir_p99": 1.615684,
+    "slo_violations": 4,
+    "ir_over_1_5_ratio": 0.06,
+    "ir_over_2_ratio": 0.0,
+    "limited_tasks": 50,
+    "drop_rate": 0.04,
+    "drop_count": 2
+  },
+  "cluster": [
+    {
+      "node_id": "nv-node-1",
+      "vendor": "nvidia",
+      "link_bandwidth": 900.0,
+      "total_compute": 624.0,
+      "total_memory": 160.0,
+      "total_bandwidth": 4078.0,
+      "active_tasks": 0,
+      "gpus": [
+        {
+          "gpu_id": "a100-01",
+          "vendor": "nvidia",
+          "model": "A100",
+          "capacity": {
+            "compute": 312,
+            "memory": 80,
+            "bandwidth": 2039,
+            "resource_id": "a100-01",
+            "vendor": "nvidia",
+            "model": "A100"
+          }
+        },
+        {
+          "gpu_id": "a100-02",
+          "vendor": "nvidia",
+          "model": "A100",
+          "capacity": {
+            "compute": 312,
+            "memory": 80,
+            "bandwidth": 2039,
+            "resource_id": "a100-02",
+            "vendor": "nvidia",
+            "model": "A100"
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "nv-node-2",
+      "vendor": "nvidia",
+      "link_bandwidth": 900.0,
+      "total_compute": 312.0,
+      "total_memory": 80.0,
+      "total_bandwidth": 2039.0,
+      "active_tasks": 0,
+      "gpus": [
+        {
+          "gpu_id": "a100-03",
+          "vendor": "nvidia",
+          "model": "A100",
+          "capacity": {
+            "compute": 312,
+            "memory": 80,
+            "bandwidth": 2039,
+            "resource_id": "a100-03",
+            "vendor": "nvidia",
+            "model": "A100"
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "asc-node-1",
+      "vendor": "huawei",
+      "link_bandwidth": 720.0,
+      "total_compute": 476.0,
+      "total_memory": 115.2,
+      "total_bandwidth": 2560.0,
+      "active_tasks": 0,
+      "gpus": [
+        {
+          "gpu_id": "910b-01",
+          "vendor": "huawei",
+          "model": "Ascend910B",
+          "capacity": {
+            "compute": 280,
+            "memory": 64,
+            "bandwidth": 1600,
+            "resource_id": "910b-01",
+            "vendor": "huawei",
+            "model": "Ascend910B"
+          }
+        },
+        {
+          "gpu_id": "910b-02",
+          "vendor": "huawei",
+          "model": "Ascend910B",
+          "capacity": {
+            "compute": 280,
+            "memory": 64,
+            "bandwidth": 1600,
+            "resource_id": "910b-02",
+            "vendor": "huawei",
+            "model": "Ascend910B"
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "asc-node-2",
+      "vendor": "huawei",
+      "link_bandwidth": 720.0,
+      "total_compute": 238.0,
+      "total_memory": 57.6,
+      "total_bandwidth": 1280.0,
+      "active_tasks": 0,
+      "gpus": [
+        {
+          "gpu_id": "910b-03",
+          "vendor": "huawei",
+          "model": "Ascend910B",
+          "capacity": {
+            "compute": 280,
+            "memory": 64,
+            "bandwidth": 1600,
+            "resource_id": "910b-03",
+            "vendor": "huawei",
+            "model": "Ascend910B"
+          }
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "preprocess-pipeline-42",
+      "arrival_time": 18.40848398110282,
+      "deadline": 45.0,
+      "ideal_duration": 30.0,
+      "compatibility": [
+        "huawei",
+        "nvidia"
+      ],
+      "k_min": 1,
+      "k_max": 1,
+      "demand": {
+        "compute": 90,
+        "memory": 30,
+        "bandwidth": 480,
+        "resource_id": "task-42",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.01532308357022822,
+        "memory_amp": 0.01137975561193584,
+        "bandwidth_amp": 0.006086211420847858,
+        "period": 67.22573690680733,
+        "spike_probability": 0.0031721975314827977,
+        "spike_amp": 0.06809771549428338,
+        "phase": 0.02284902263631583
+      },
+      "workload": 2700
+    },
+    {
+      "task_id": "llm-batch-15",
+      "arrival_time": 19.919302917980026,
+      "deadline": 40.0,
+      "ideal_duration": 25.0,
+      "compatibility": [
+        "huawei",
+        "nvidia"
+      ],
+      "k_min": 2,
+      "k_max": 4,
+      "demand": {
+        "compute": 160,
+        "memory": 56,
+        "bandwidth": 950,
+        "resource_id": "task-15",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.006010214237645373,
+        "memory_amp": 0.008131447781692468,
+        "bandwidth_amp": 0.007434547816581461,
+        "period": 40.30241435045545,
+        "spike_probability": 0.0002628780194513347,
+        "spike_amp": 0.020013996914081397,
+        "phase": 0.04518180005949157
+      },
+      "workload": 4000
+    },
+    {
+      "task_id": "multimodal-online-36",
+      "arrival_time": 23.398645431255787,
+      "deadline": 35.0,
+      "ideal_duration": 25.0,
+      "compatibility": [
+        "nvidia"
+      ],
+      "k_min": 1,
+      "k_max": 2,
+      "demand": {
+        "compute": 120,
+        "memory": 42,
+        "bandwidth": 720,
+        "resource_id": "task-36",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.015042082179648437,
+        "memory_amp": 0.016759040257597328,
+        "bandwidth_amp": 0.0184553964931815,
+        "period": 31.950098069591146,
+        "spike_probability": 0.0035805994139409807,
+        "spike_amp": 0.059615390911482255,
+        "phase": 0.025459578618908685
+      },
+      "workload": 3000
+    },
+    {
+      "task_id": "multimodal-online-16",
+      "arrival_time": 32.46859776723088,
+      "deadline": 35.0,
+      "ideal_duration": 25.0,
+      "compatibility": [
+        "nvidia"
+      ],
+      "k_min": 1,
+      "k_max": 2,
+      "demand": {
+        "compute": 120,
+        "memory": 42,
+        "bandwidth": 720,
+        "resource_id": "task-16",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.010454148830518564,
+        "memory_amp": 0.005382513299992186,
+        "bandwidth_amp": 0.018114985660607295,
+        "period": 52.63310445048154,
+        "spike_probability": 0.0007427524266544572,
+        "spike_amp": 0.03513546539342464,
+        "phase": 0.29812665914808134
+      },
+      "workload": 3000
+    },
+    {
+      "task_id": "feature-etl-3",
+      "arrival_time": 37.693516185077875,
+      "deadline": 42.0,
+      "ideal_duration": 30.0,
+      "compatibility": [
+        "huawei"
+      ],
+      "k_min": 1,
+      "k_max": 1,
+      "demand": {
+        "compute": 60,
+        "memory": 24,
+        "bandwidth": 360,
+        "resource_id": "task-3",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.009627227361529015,
+        "memory_amp": 0.01724189538680047,
+        "bandwidth_amp": 0.0077108956988590615,
+        "period": 51.17200736481098,
+        "spike_probability": 0.0031945673446309203,
+        "spike_amp": 0.04234385256354387,
+        "phase": 0.8427803619050311
+      },
+      "workload": 1800
+    },
+    {
+      "task_id": "llm-batch-0",
+      "arrival_time": 48.271735655840615,
+      "deadline": 40.0,
+      "ideal_duration": 25.0,
+      "compatibility": [
+        "huawei",
+        "nvidia"
+      ],
+      "k_min": 2,
+      "k_max": 4,
+      "demand": {
+        "compute": 160,
+        "memory": 56,
+        "bandwidth": 950,
+        "resource_id": "task-0",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.014764017095597805,
+        "memory_amp": 0.006086544300013141,
+        "bandwidth_amp": 0.013038230064600337,
+        "period": 41.45600126106635,
+        "spike_probability": 0.000289994623873534,
+        "spike_amp": 0.05044614399136521,
+        "phase": 0.9899877631239203
+      },
+      "workload": 4000
+    },
+    {
+      "task_id": "llm-batch-25",
+      "arrival_time": 57.126949868023544,
+      "deadline": 40.0,
+      "ideal_duration": 25.0,
+      "compatibility": [
+        "huawei",
+        "nvidia"
+      ],
+      "k_min": 2,
+      "k_max": 4,
+      "demand": {
+        "compute": 160,
+        "memory": 56,
+        "bandwidth": 950,
+        "resource_id": "task-25",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.016837031465304145,
+        "memory_amp": 0.009987757997969148,
+        "bandwidth_amp": 0.017012353533450365,
+        "period": 68.72457800419713,
+        "spike_probability": 0.0019791924753472406,
+        "spike_amp": 0.04408320907206209,
+        "phase": 0.22499228159380935
+      },
+      "workload": 4000
+    },
+    {
+      "task_id": "multimodal-online-31",
+      "arrival_time": 58.594523927103594,
+      "deadline": 35.0,
+      "ideal_duration": 25.0,
+      "compatibility": [
+        "nvidia"
+      ],
+      "k_min": 1,
+      "k_max": 2,
+      "demand": {
+        "compute": 120,
+        "memory": 42,
+        "bandwidth": 720,
+        "resource_id": "task-31",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.00505898722738463,
+        "memory_amp": 0.016987556757383324,
+        "bandwidth_amp": 0.007585200683201733,
+        "period": 46.307181960788036,
+        "spike_probability": 0.00362596635223689,
+        "spike_amp": 0.05338853749413279,
+        "phase": 0.1521639337164452
+      },
+      "workload": 3000
+    },
+    {
+      "task_id": "preprocess-pipeline-22",
+      "arrival_time": 89.41393249568954,
+      "deadline": 45.0,
+      "ideal_duration": 30.0,
+      "compatibility": [
+        "huawei",
+        "nvidia"
+      ],
+      "k_min": 1,
+      "k_max": 1,
+      "demand": {
+        "compute": 90,
+        "memory": 30,
+        "bandwidth": 480,
+        "resource_id": "task-22",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.008887615449016348,
+        "memory_amp": 0.01538782912550185,
+        "bandwidth_amp": 0.019347726145120068,
+        "period": 45.125245499502554,
+        "spike_probability": 0.004685106006381212,
+        "spike_amp": 0.0792822834921716,
+        "phase": 0.9581054458100791
+      },
+      "workload": 2700
+    },
+    {
+      "task_id": "llm-heavy-19",
+      "arrival_time": 105.94614389020376,
+      "deadline": 60.0,
+      "ideal_duration": 34.285714285714285,
+      "compatibility": [
+        "nvidia"
+      ],
+      "k_min": 3,
+      "k_max": 4,
+      "demand": {
+        "compute": 210,
+        "memory": 48,
+        "bandwidth": 1100,
+        "resource_id": "task-19",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.658432832281492,
+        "memory_amp": 0.4957002485437946,
+        "bandwidth_amp": 0.5726650060579338,
+        "period": 10.177180715446811,
+        "spike_probability": 0.21527879930734048,
+        "spike_amp": 1.2833498958805896,
+        "phase": 0.2759489185697265
+      },
+      "workload": 7200
+    },
+    {
+      "task_id": "llm-heavy-4",
+      "arrival_time": 106.36289497556777,
+      "deadline": 60.0,
+      "ideal_duration": 34.285714285714285,
+      "compatibility": [
+        "nvidia"
+      ],
+      "k_min": 3,
+      "k_max": 4,
+      "demand": {
+        "compute": 210,
+        "memory": 48,
+        "bandwidth": 1100,
+        "resource_id": "task-4",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.561787613845798,
+        "memory_amp": 0.43607999463635716,
+        "bandwidth_amp": 0.4855184611338806,
+        "period": 7.884883022260749,
+        "spike_probability": 0.29639046587690965,
+        "spike_amp": 1.3265921881853877,
+        "phase": 0.7219335675843215
+      },
+      "workload": 7200
+    },
+    {
+      "task_id": "llm-heavy-49",
+      "arrival_time": 107.6895554595376,
+      "deadline": 60.0,
+      "ideal_duration": 34.285714285714285,
+      "compatibility": [
+        "nvidia"
+      ],
+      "k_min": 3,
+      "k_max": 4,
+      "demand": {
+        "compute": 210,
+        "memory": 48,
+        "bandwidth": 1100,
+        "resource_id": "task-49",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.5253454618123792,
+        "memory_amp": 0.4682537963701513,
+        "bandwidth_amp": 0.5741075642495497,
+        "period": 10.023259787452071,
+        "spike_probability": 0.22048332057665737,
+        "spike_amp": 1.2211064669962433,
+        "phase": 0.8926951855869245
+      },
+      "workload": 7200
+    },
+    {
+      "task_id": "llm-heavy-9",
+      "arrival_time": 109.24282281080511,
+      "deadline": 60.0,
+      "ideal_duration": 34.285714285714285,
+      "compatibility": [
+        "nvidia"
+      ],
+      "k_min": 3,
+      "k_max": 4,
+      "demand": {
+        "compute": 210,
+        "memory": 48,
+        "bandwidth": 1100,
+        "resource_id": "task-9",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.6157374327340133,
+        "memory_amp": 0.4337305431768376,
+        "bandwidth_amp": 0.40451258561111775,
+        "period": 8.770171717798595,
+        "spike_probability": 0.19201209472663613,
+        "spike_amp": 1.158547897240866,
+        "phase": 0.7053657504595453
+      },
+      "workload": 7200
+    },
+    {
+      "task_id": "feature-etl-18",
+      "arrival_time": 109.64346823776057,
+      "deadline": 42.0,
+      "ideal_duration": 30.0,
+      "compatibility": [
+        "huawei"
+      ],
+      "k_min": 1,
+      "k_max": 1,
+      "demand": {
+        "compute": 60,
+        "memory": 24,
+        "bandwidth": 360,
+        "resource_id": "task-18",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.0089713533757577,
+        "memory_amp": 0.017432830671823406,
+        "bandwidth_amp": 0.007421579157896473,
+        "period": 26.039307447036165,
+        "spike_probability": 0.00475492786437351,
+        "spike_amp": 0.05169544370252749,
+        "phase": 0.9295244850571325
+      },
+      "workload": 1800
+    },
+    {
+      "task_id": "llm-heavy-39",
+      "arrival_time": 111.23786370307458,
+      "deadline": 60.0,
+      "ideal_duration": 34.285714285714285,
+      "compatibility": [
+        "nvidia"
+      ],
+      "k_min": 3,
+      "k_max": 4,
+      "demand": {
+        "compute": 210,
+        "memory": 48,
+        "bandwidth": 1100,
+        "resource_id": "task-39",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.5054245942481113,
+        "memory_amp": 0.3662995778283981,
+        "bandwidth_amp": 0.5247854147783728,
+        "period": 9.073573706780733,
+        "spike_probability": 0.16607269814768796,
+        "spike_amp": 1.5925416220670496,
+        "phase": 0.6620839921383169
+      },
+      "workload": 7200
+    },
+    {
+      "task_id": "llm-heavy-34",
+      "arrival_time": 111.39002614099084,
+      "deadline": 60.0,
+      "ideal_duration": 34.285714285714285,
+      "compatibility": [
+        "nvidia"
+      ],
+      "k_min": 3,
+      "k_max": 4,
+      "demand": {
+        "compute": 210,
+        "memory": 48,
+        "bandwidth": 1100,
+        "resource_id": "task-34",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.6599856312737513,
+        "memory_amp": 0.39560726360641696,
+        "bandwidth_amp": 0.5883002255077001,
+        "period": 10.195307293081715,
+        "spike_probability": 0.36913387044514834,
+        "spike_amp": 1.571090294151788,
+        "phase": 0.8990744062253067
+      },
+      "workload": 7200
+    },
+    {
+      "task_id": "llm-heavy-44",
+      "arrival_time": 112.3445123395478,
+      "deadline": 60.0,
+      "ideal_duration": 34.285714285714285,
+      "compatibility": [
+        "nvidia"
+      ],
+      "k_min": 3,
+      "k_max": 4,
+      "demand": {
+        "compute": 210,
+        "memory": 48,
+        "bandwidth": 1100,
+        "resource_id": "task-44",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.5715308508384062,
+        "memory_amp": 0.32189029301585675,
+        "bandwidth_amp": 0.4322898183195223,
+        "period": 6.302278303257196,
+        "spike_probability": 0.20044206219212501,
+        "spike_amp": 1.2559962020392386,
+        "phase": 0.9415979627052543
+      },
+      "workload": 7200
+    },
+    {
+      "task_id": "llm-heavy-29",
+      "arrival_time": 113.1063957525243,
+      "deadline": 60.0,
+      "ideal_duration": 34.285714285714285,
+      "compatibility": [
+        "nvidia"
+      ],
+      "k_min": 3,
+      "k_max": 4,
+      "demand": {
+        "compute": 210,
+        "memory": 48,
+        "bandwidth": 1100,
+        "resource_id": "task-29",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.577809438581063,
+        "memory_amp": 0.38380251055090875,
+        "bandwidth_amp": 0.4262147353006967,
+        "period": 11.460102337893339,
+        "spike_probability": 0.23844600598831472,
+        "spike_amp": 1.3290804932358669,
+        "phase": 0.9552810808155854
+      },
+      "workload": 7200
+    },
+    {
+      "task_id": "llm-heavy-24",
+      "arrival_time": 113.95811894836491,
+      "deadline": 60.0,
+      "ideal_duration": 34.285714285714285,
+      "compatibility": [
+        "nvidia"
+      ],
+      "k_min": 3,
+      "k_max": 4,
+      "demand": {
+        "compute": 210,
+        "memory": 48,
+        "bandwidth": 1100,
+        "resource_id": "task-24",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.7398931234548981,
+        "memory_amp": 0.316955697290076,
+        "bandwidth_amp": 0.5321171300409788,
+        "period": 11.458662825310338,
+        "spike_probability": 0.3455757210245225,
+        "spike_amp": 1.4750702299152292,
+        "phase": 0.7368619397223852
+      },
+      "workload": 7200
+    },
+    {
+      "task_id": "preprocess-pipeline-17",
+      "arrival_time": 116.53230064905038,
+      "deadline": 45.0,
+      "ideal_duration": 30.0,
+      "compatibility": [
+        "huawei",
+        "nvidia"
+      ],
+      "k_min": 1,
+      "k_max": 1,
+      "demand": {
+        "compute": 90,
+        "memory": 30,
+        "bandwidth": 480,
+        "resource_id": "task-17",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.006842633461432924,
+        "memory_amp": 0.017734053897269224,
+        "bandwidth_amp": 0.01989654082557071,
+        "period": 45.969525662197015,
+        "spike_probability": 0.002419173282081347,
+        "spike_amp": 0.025153079693369936,
+        "phase": 0.13598289232529137
+      },
+      "workload": 2700
+    },
+    {
+      "task_id": "llm-heavy-14",
+      "arrival_time": 117.1140225287418,
+      "deadline": 60.0,
+      "ideal_duration": 34.285714285714285,
+      "compatibility": [
+        "nvidia"
+      ],
+      "k_min": 3,
+      "k_max": 4,
+      "demand": {
+        "compute": 210,
+        "memory": 48,
+        "bandwidth": 1100,
+        "resource_id": "task-14",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.7339908472118218,
+        "memory_amp": 0.4749026368268953,
+        "bandwidth_amp": 0.5595746242393131,
+        "period": 8.354273441347612,
+        "spike_probability": 0.24974470808006824,
+        "spike_amp": 1.1517685468551622,
+        "phase": 0.03681666173541431
+      },
+      "workload": 7200
+    },
+    {
+      "task_id": "feature-etl-13",
+      "arrival_time": 134.06288036010494,
+      "deadline": 42.0,
+      "ideal_duration": 30.0,
+      "compatibility": [
+        "huawei"
+      ],
+      "k_min": 1,
+      "k_max": 1,
+      "demand": {
+        "compute": 60,
+        "memory": 24,
+        "bandwidth": 360,
+        "resource_id": "task-13",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.010538803593420881,
+        "memory_amp": 0.01349511835559588,
+        "bandwidth_amp": 0.01929646888287643,
+        "period": 56.072214571119005,
+        "spike_probability": 0.002577457165353892,
+        "spike_amp": 0.05705556496454765,
+        "phase": 0.6580290134134127
+      },
+      "workload": 1800
+    },
+    {
+      "task_id": "multimodal-online-1",
+      "arrival_time": 138.76661877196346,
+      "deadline": 35.0,
+      "ideal_duration": 25.0,
+      "compatibility": [
+        "nvidia"
+      ],
+      "k_min": 1,
+      "k_max": 2,
+      "demand": {
+        "compute": 120,
+        "memory": 42,
+        "bandwidth": 720,
+        "resource_id": "task-1",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.006047831353619284,
+        "memory_amp": 0.006360695200157976,
+        "bandwidth_amp": 0.01136778783713771,
+        "period": 62.208345610241714,
+        "spike_probability": 0.0006190098057482279,
+        "spike_amp": 0.03339433787642087,
+        "phase": 0.9035686036013088
+      },
+      "workload": 3000
+    },
+    {
+      "task_id": "preprocess-pipeline-12",
+      "arrival_time": 148.8294689853155,
+      "deadline": 45.0,
+      "ideal_duration": 30.0,
+      "compatibility": [
+        "huawei",
+        "nvidia"
+      ],
+      "k_min": 1,
+      "k_max": 1,
+      "demand": {
+        "compute": 90,
+        "memory": 30,
+        "bandwidth": 480,
+        "resource_id": "task-12",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.007643265927355555,
+        "memory_amp": 0.008479353002293036,
+        "bandwidth_amp": 0.008500041255212917,
+        "period": 46.82332286536105,
+        "spike_probability": 0.002945617518661278,
+        "spike_amp": 0.035764797157912274,
+        "phase": 0.41297294565922993
+      },
+      "workload": 2700
+    },
+    {
+      "task_id": "feature-etl-38",
+      "arrival_time": 149.16691391618812,
+      "deadline": 42.0,
+      "ideal_duration": 30.0,
+      "compatibility": [
+        "huawei"
+      ],
+      "k_min": 1,
+      "k_max": 1,
+      "demand": {
+        "compute": 60,
+        "memory": 24,
+        "bandwidth": 360,
+        "resource_id": "task-38",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.011472827269964583,
+        "memory_amp": 0.012734075867065386,
+        "bandwidth_amp": 0.010086742165082298,
+        "period": 33.808509976026905,
+        "spike_probability": 0.00159262784168847,
+        "spike_amp": 0.06332905010847115,
+        "phase": 0.0005882754764857667
+      },
+      "workload": 1800
+    },
+    {
+      "task_id": "feature-etl-23",
+      "arrival_time": 155.66834833157972,
+      "deadline": 42.0,
+      "ideal_duration": 30.0,
+      "compatibility": [
+        "huawei"
+      ],
+      "k_min": 1,
+      "k_max": 1,
+      "demand": {
+        "compute": 60,
+        "memory": 24,
+        "bandwidth": 360,
+        "resource_id": "task-23",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.008306934844943561,
+        "memory_amp": 0.00840268740096092,
+        "bandwidth_amp": 0.007950592451289758,
+        "period": 34.19680134743004,
+        "spike_probability": 0.0031203319871890914,
+        "spike_amp": 0.07401850027304685,
+        "phase": 0.28114248622446747
+      },
+      "workload": 1800
+    },
+    {
+      "task_id": "preprocess-pipeline-47",
+      "arrival_time": 158.40050350643693,
+      "deadline": 45.0,
+      "ideal_duration": 30.0,
+      "compatibility": [
+        "huawei",
+        "nvidia"
+      ],
+      "k_min": 1,
+      "k_max": 1,
+      "demand": {
+        "compute": 90,
+        "memory": 30,
+        "bandwidth": 480,
+        "resource_id": "task-47",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.01751920899995334,
+        "memory_amp": 0.010896291133423788,
+        "bandwidth_amp": 0.012600289282327485,
+        "period": 55.948378106081115,
+        "spike_probability": 0.004912202702073986,
+        "spike_amp": 0.04056227752504847,
+        "phase": 0.1526320648859646
+      },
+      "workload": 2700
+    },
+    {
+      "task_id": "feature-etl-33",
+      "arrival_time": 160.24684773735424,
+      "deadline": 42.0,
+      "ideal_duration": 30.0,
+      "compatibility": [
+        "huawei"
+      ],
+      "k_min": 1,
+      "k_max": 1,
+      "demand": {
+        "compute": 60,
+        "memory": 24,
+        "bandwidth": 360,
+        "resource_id": "task-33",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.013425940799847144,
+        "memory_amp": 0.016399897138850247,
+        "bandwidth_amp": 0.01868732054494718,
+        "period": 44.94617771098475,
+        "spike_probability": 0.003062639421722302,
+        "spike_amp": 0.0503331878510733,
+        "phase": 0.2605148608934753
+      },
+      "workload": 1800
+    },
+    {
+      "task_id": "preprocess-pipeline-32",
+      "arrival_time": 165.87158806497177,
+      "deadline": 45.0,
+      "ideal_duration": 30.0,
+      "compatibility": [
+        "huawei",
+        "nvidia"
+      ],
+      "k_min": 1,
+      "k_max": 1,
+      "demand": {
+        "compute": 90,
+        "memory": 30,
+        "bandwidth": 480,
+        "resource_id": "task-32",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.013331628123203702,
+        "memory_amp": 0.016764087130482132,
+        "bandwidth_amp": 0.006591641256573924,
+        "period": 50.21332601127785,
+        "spike_probability": 0.00124247160521545,
+        "spike_amp": 0.03661502422788689,
+        "phase": 0.5167742684889597
+      },
+      "workload": 2700
+    },
+    {
+      "task_id": "feature-etl-48",
+      "arrival_time": 166.6152128526793,
+      "deadline": 42.0,
+      "ideal_duration": 30.0,
+      "compatibility": [
+        "huawei"
+      ],
+      "k_min": 1,
+      "k_max": 1,
+      "demand": {
+        "compute": 60,
+        "memory": 24,
+        "bandwidth": 360,
+        "resource_id": "task-48",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.014539654233275221,
+        "memory_amp": 0.01107046563060262,
+        "bandwidth_amp": 0.01021328270232848,
+        "period": 27.447484155479632,
+        "spike_probability": 0.0006490929057544143,
+        "spike_amp": 0.02424336893504037,
+        "phase": 0.5920078514450674
+      },
+      "workload": 1800
+    },
+    {
+      "task_id": "multimodal-online-26",
+      "arrival_time": 167.19355730029488,
+      "deadline": 35.0,
+      "ideal_duration": 25.0,
+      "compatibility": [
+        "nvidia"
+      ],
+      "k_min": 1,
+      "k_max": 2,
+      "demand": {
+        "compute": 120,
+        "memory": 42,
+        "bandwidth": 720,
+        "resource_id": "task-26",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.007550054899578432,
+        "memory_amp": 0.006905575509467965,
+        "bandwidth_amp": 0.007267260505722347,
+        "period": 65.71834430799578,
+        "spike_probability": 0.0040325099101609805,
+        "spike_amp": 0.028770458524632447,
+        "phase": 0.9826202545144349
+      },
+      "workload": 3000
+    },
+    {
+      "task_id": "feature-etl-28",
+      "arrival_time": 168.50593507169776,
+      "deadline": 42.0,
+      "ideal_duration": 30.0,
+      "compatibility": [
+        "huawei"
+      ],
+      "k_min": 1,
+      "k_max": 1,
+      "demand": {
+        "compute": 60,
+        "memory": 24,
+        "bandwidth": 360,
+        "resource_id": "task-28",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.0190043720758614,
+        "memory_amp": 0.011507141551362284,
+        "bandwidth_amp": 0.01807614391984106,
+        "period": 62.17698633168495,
+        "spike_probability": 0.0010552116866407442,
+        "spike_amp": 0.03511008868192723,
+        "phase": 0.4062448335810178
+      },
+      "workload": 1800
+    },
+    {
+      "task_id": "multimodal-online-21",
+      "arrival_time": 169.79451471314135,
+      "deadline": 35.0,
+      "ideal_duration": 25.0,
+      "compatibility": [
+        "nvidia"
+      ],
+      "k_min": 1,
+      "k_max": 2,
+      "demand": {
+        "compute": 120,
+        "memory": 42,
+        "bandwidth": 720,
+        "resource_id": "task-21",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.0172749941498806,
+        "memory_amp": 0.01609809530563571,
+        "bandwidth_amp": 0.008401092350473774,
+        "period": 48.29374259095775,
+        "spike_probability": 0.001777812716774791,
+        "spike_amp": 0.021738809044481923,
+        "phase": 0.9043744087412259
+      },
+      "workload": 3000
+    },
+    {
+      "task_id": "llm-batch-40",
+      "arrival_time": 175.09427067670637,
+      "deadline": 40.0,
+      "ideal_duration": 25.0,
+      "compatibility": [
+        "huawei",
+        "nvidia"
+      ],
+      "k_min": 2,
+      "k_max": 4,
+      "demand": {
+        "compute": 160,
+        "memory": 56,
+        "bandwidth": 950,
+        "resource_id": "task-40",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.006571693914092474,
+        "memory_amp": 0.008983464085152796,
+        "bandwidth_amp": 0.005593822848711015,
+        "period": 60.05488435305515,
+        "spike_probability": 0.0013522304876065455,
+        "spike_amp": 0.02777333355834064,
+        "phase": 0.4363752466238936
+      },
+      "workload": 4000
+    },
+    {
+      "task_id": "preprocess-pipeline-27",
+      "arrival_time": 175.36979019030497,
+      "deadline": 45.0,
+      "ideal_duration": 30.0,
+      "compatibility": [
+        "huawei",
+        "nvidia"
+      ],
+      "k_min": 1,
+      "k_max": 1,
+      "demand": {
+        "compute": 90,
+        "memory": 30,
+        "bandwidth": 480,
+        "resource_id": "task-27",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.0148590243910403,
+        "memory_amp": 0.010256112682362543,
+        "bandwidth_amp": 0.013229900659801688,
+        "period": 30.89427334042527,
+        "spike_probability": 7.121469078052778e-05,
+        "spike_amp": 0.07825341063426586,
+        "phase": 0.13425670690366187
+      },
+      "workload": 2700
+    },
+    {
+      "task_id": "llm-batch-35",
+      "arrival_time": 179.04441807926875,
+      "deadline": 40.0,
+      "ideal_duration": 25.0,
+      "compatibility": [
+        "huawei",
+        "nvidia"
+      ],
+      "k_min": 2,
+      "k_max": 4,
+      "demand": {
+        "compute": 160,
+        "memory": 56,
+        "bandwidth": 950,
+        "resource_id": "task-35",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.019149005510202256,
+        "memory_amp": 0.017599996750898086,
+        "bandwidth_amp": 0.007057016538452772,
+        "period": 30.47298794728813,
+        "spike_probability": 0.002210590441375218,
+        "spike_amp": 0.024352765979389297,
+        "phase": 0.7871677734404419
+      },
+      "workload": 4000
+    },
+    {
+      "task_id": "multimodal-online-46",
+      "arrival_time": 234.58572269834036,
+      "deadline": 35.0,
+      "ideal_duration": 25.0,
+      "compatibility": [
+        "nvidia"
+      ],
+      "k_min": 1,
+      "k_max": 2,
+      "demand": {
+        "compute": 120,
+        "memory": 42,
+        "bandwidth": 720,
+        "resource_id": "task-46",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.013265736920168802,
+        "memory_amp": 0.007841847447406677,
+        "bandwidth_amp": 0.012121409577766007,
+        "period": 67.05892779020593,
+        "spike_probability": 0.0005314067251354571,
+        "spike_amp": 0.06913520842050283,
+        "phase": 0.5362749827767666
+      },
+      "workload": 3000
+    },
+    {
+      "task_id": "llm-batch-45",
+      "arrival_time": 243.0394415995396,
+      "deadline": 40.0,
+      "ideal_duration": 25.0,
+      "compatibility": [
+        "huawei",
+        "nvidia"
+      ],
+      "k_min": 2,
+      "k_max": 4,
+      "demand": {
+        "compute": 160,
+        "memory": 56,
+        "bandwidth": 950,
+        "resource_id": "task-45",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.009349412520865373,
+        "memory_amp": 0.01250132899792759,
+        "bandwidth_amp": 0.00766849826319393,
+        "period": 40.61504599575365,
+        "spike_probability": 9.081553647290853e-05,
+        "spike_amp": 0.035026925371713646,
+        "phase": 0.9911376181681943
+      },
+      "workload": 4000
+    },
+    {
+      "task_id": "preprocess-pipeline-7",
+      "arrival_time": 244.6626771881002,
+      "deadline": 45.0,
+      "ideal_duration": 30.0,
+      "compatibility": [
+        "huawei",
+        "nvidia"
+      ],
+      "k_min": 1,
+      "k_max": 1,
+      "demand": {
+        "compute": 90,
+        "memory": 30,
+        "bandwidth": 480,
+        "resource_id": "task-7",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.01359538910416076,
+        "memory_amp": 0.018132167177463323,
+        "bandwidth_amp": 0.009706212692721452,
+        "period": 56.28829148231467,
+        "spike_probability": 0.0029718493855250923,
+        "spike_amp": 0.054793712256949526,
+        "phase": 0.34258454601850363
+      },
+      "workload": 2700
+    },
+    {
+      "task_id": "llm-batch-10",
+      "arrival_time": 245.83455631120665,
+      "deadline": 40.0,
+      "ideal_duration": 25.0,
+      "compatibility": [
+        "huawei",
+        "nvidia"
+      ],
+      "k_min": 2,
+      "k_max": 4,
+      "demand": {
+        "compute": 160,
+        "memory": 56,
+        "bandwidth": 950,
+        "resource_id": "task-10",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.006940103330280264,
+        "memory_amp": 0.008714222505453714,
+        "bandwidth_amp": 0.010864245546998406,
+        "period": 64.21398883568347,
+        "spike_probability": 0.00040290650600069314,
+        "spike_amp": 0.04695124405695986,
+        "phase": 0.6151245237323608
+      },
+      "workload": 4000
+    },
+    {
+      "task_id": "llm-batch-20",
+      "arrival_time": 247.02013068865,
+      "deadline": 40.0,
+      "ideal_duration": 25.0,
+      "compatibility": [
+        "huawei",
+        "nvidia"
+      ],
+      "k_min": 2,
+      "k_max": 4,
+      "demand": {
+        "compute": 160,
+        "memory": 56,
+        "bandwidth": 950,
+        "resource_id": "task-20",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.012988885962393185,
+        "memory_amp": 0.01668582337007266,
+        "bandwidth_amp": 0.009944974925716436,
+        "period": 35.03687528964333,
+        "spike_probability": 0.004057556233867975,
+        "spike_amp": 0.07909556303545344,
+        "phase": 0.8408339252352016
+      },
+      "workload": 4000
+    },
+    {
+      "task_id": "llm-batch-5",
+      "arrival_time": 254.20143408719719,
+      "deadline": 40.0,
+      "ideal_duration": 25.0,
+      "compatibility": [
+        "huawei",
+        "nvidia"
+      ],
+      "k_min": 2,
+      "k_max": 4,
+      "demand": {
+        "compute": 160,
+        "memory": 56,
+        "bandwidth": 950,
+        "resource_id": "task-5",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.01548491650594357,
+        "memory_amp": 0.008661447660832293,
+        "bandwidth_amp": 0.013616355653880065,
+        "period": 48.63384267151531,
+        "spike_probability": 0.004375687477867145,
+        "spike_amp": 0.06376671736635306,
+        "phase": 0.5854775273133814
+      },
+      "workload": 4000
+    },
+    {
+      "task_id": "feature-etl-8",
+      "arrival_time": 268.78968976401325,
+      "deadline": 42.0,
+      "ideal_duration": 30.0,
+      "compatibility": [
+        "huawei"
+      ],
+      "k_min": 1,
+      "k_max": 1,
+      "demand": {
+        "compute": 60,
+        "memory": 24,
+        "bandwidth": 360,
+        "resource_id": "task-8",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.01917021642661906,
+        "memory_amp": 0.012111475061294667,
+        "bandwidth_amp": 0.014962283082120116,
+        "period": 27.730124241874886,
+        "spike_probability": 0.0035074601065221197,
+        "spike_amp": 0.05882773127166012,
+        "phase": 0.49135265741599354
+      },
+      "workload": 1800
+    },
+    {
+      "task_id": "feature-etl-43",
+      "arrival_time": 273.99316363908764,
+      "deadline": 42.0,
+      "ideal_duration": 30.0,
+      "compatibility": [
+        "huawei"
+      ],
+      "k_min": 1,
+      "k_max": 1,
+      "demand": {
+        "compute": 60,
+        "memory": 24,
+        "bandwidth": 360,
+        "resource_id": "task-43",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.0059993380231169215,
+        "memory_amp": 0.017941624535807693,
+        "bandwidth_amp": 0.011806602814593874,
+        "period": 40.26182997780863,
+        "spike_probability": 0.002765320592290175,
+        "spike_amp": 0.07560015704427363,
+        "phase": 0.31355238118773365
+      },
+      "workload": 1800
+    },
+    {
+      "task_id": "preprocess-pipeline-37",
+      "arrival_time": 282.50650677026414,
+      "deadline": 45.0,
+      "ideal_duration": 30.0,
+      "compatibility": [
+        "huawei",
+        "nvidia"
+      ],
+      "k_min": 1,
+      "k_max": 1,
+      "demand": {
+        "compute": 90,
+        "memory": 30,
+        "bandwidth": 480,
+        "resource_id": "task-37",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.01951317173999576,
+        "memory_amp": 0.008293817462028796,
+        "bandwidth_amp": 0.019287561933784794,
+        "period": 42.921559362277236,
+        "spike_probability": 0.002436303874954401,
+        "spike_amp": 0.07939228728465719,
+        "phase": 0.9814078554487957
+      },
+      "workload": 2700
+    },
+    {
+      "task_id": "multimodal-online-11",
+      "arrival_time": 282.682824461284,
+      "deadline": 35.0,
+      "ideal_duration": 25.0,
+      "compatibility": [
+        "nvidia"
+      ],
+      "k_min": 1,
+      "k_max": 2,
+      "demand": {
+        "compute": 120,
+        "memory": 42,
+        "bandwidth": 720,
+        "resource_id": "task-11",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.017289197567536118,
+        "memory_amp": 0.017959767045477727,
+        "bandwidth_amp": 0.009176315967708456,
+        "period": 43.68834327452643,
+        "spike_probability": 0.001793855826658124,
+        "spike_amp": 0.07305156963189302,
+        "phase": 0.7433103232081132
+      },
+      "workload": 3000
+    },
+    {
+      "task_id": "llm-batch-30",
+      "arrival_time": 289.37496785345274,
+      "deadline": 40.0,
+      "ideal_duration": 25.0,
+      "compatibility": [
+        "huawei",
+        "nvidia"
+      ],
+      "k_min": 2,
+      "k_max": 4,
+      "demand": {
+        "compute": 160,
+        "memory": 56,
+        "bandwidth": 950,
+        "resource_id": "task-30",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.011309424060635977,
+        "memory_amp": 0.018765816265139963,
+        "bandwidth_amp": 0.012524734116803472,
+        "period": 48.932123309617026,
+        "spike_probability": 0.0026175329279358316,
+        "spike_amp": 0.021122292074325203,
+        "phase": 0.3713609729202556
+      },
+      "workload": 4000
+    },
+    {
+      "task_id": "multimodal-online-41",
+      "arrival_time": 291.6524211787549,
+      "deadline": 35.0,
+      "ideal_duration": 25.0,
+      "compatibility": [
+        "nvidia"
+      ],
+      "k_min": 1,
+      "k_max": 2,
+      "demand": {
+        "compute": 120,
+        "memory": 42,
+        "bandwidth": 720,
+        "resource_id": "task-41",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.017284684696719226,
+        "memory_amp": 0.008879135221907626,
+        "bandwidth_amp": 0.007240519211061173,
+        "period": 66.36271788302972,
+        "spike_probability": 0.002852974626966269,
+        "spike_amp": 0.062025046792797064,
+        "phase": 0.04601900453218144
+      },
+      "workload": 3000
+    },
+    {
+      "task_id": "preprocess-pipeline-2",
+      "arrival_time": 303.2668615862418,
+      "deadline": 45.0,
+      "ideal_duration": 30.0,
+      "compatibility": [
+        "huawei",
+        "nvidia"
+      ],
+      "k_min": 1,
+      "k_max": 1,
+      "demand": {
+        "compute": 90,
+        "memory": 30,
+        "bandwidth": 480,
+        "resource_id": "task-2",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.01365654422926248,
+        "memory_amp": 0.010950207119761702,
+        "bandwidth_amp": 0.0196438265838938,
+        "period": 27.09622062779903,
+        "spike_probability": 0.004292342295243398,
+        "spike_amp": 0.03737655717990057,
+        "phase": 0.19631459459412492
+      },
+      "workload": 2700
+    },
+    {
+      "task_id": "multimodal-online-6",
+      "arrival_time": 313.6559511976263,
+      "deadline": 35.0,
+      "ideal_duration": 25.0,
+      "compatibility": [
+        "nvidia"
+      ],
+      "k_min": 1,
+      "k_max": 2,
+      "demand": {
+        "compute": 120,
+        "memory": 42,
+        "bandwidth": 720,
+        "resource_id": "task-6",
+        "vendor": "",
+        "model": ""
+      },
+      "fluctuation": {
+        "compute_amp": 0.006770986673824432,
+        "memory_amp": 0.011271842326778407,
+        "bandwidth_amp": 0.01635711394347874,
+        "period": 31.839304059722714,
+        "spike_probability": 0.002444815502379028,
+        "spike_amp": 0.022352435422846262,
+        "phase": 0.6178174282277822
+      },
+      "workload": 3000
+    }
+  ],
+  "task_outcomes": [
+    {
+      "task_id": "llm-batch-15",
+      "start_time": 19.92,
+      "completion_time": 44.980000000000004,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 446,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.0024000000000002
+    },
+    {
+      "task_id": "multimodal-online-36",
+      "start_time": 23.400000000000002,
+      "completion_time": 48.300000000000004,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 875,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.9960000000000001
+    },
+    {
+      "task_id": "preprocess-pipeline-42",
+      "start_time": 18.42,
+      "completion_time": 48.46,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 805,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.0013333333333334
+    },
+    {
+      "task_id": "multimodal-online-16",
+      "start_time": 32.480000000000004,
+      "completion_time": 57.34,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 1223,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.9944
+    },
+    {
+      "task_id": "feature-etl-3",
+      "start_time": 37.7,
+      "completion_time": 67.8,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 494,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.0033333333333332
+    },
+    {
+      "task_id": "llm-batch-0",
+      "start_time": 48.28,
+      "completion_time": 73.24,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 855,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.9983999999999997
+    },
+    {
+      "task_id": "llm-batch-25",
+      "start_time": 57.14,
+      "completion_time": 81.82000000000001,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 1234,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.9872000000000003
+    },
+    {
+      "task_id": "multimodal-online-31",
+      "start_time": 58.6,
+      "completion_time": 83.66,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 249,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.0023999999999997
+    },
+    {
+      "task_id": "feature-etl-18",
+      "start_time": 109.66,
+      "completion_time": 139.62,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 908,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.9986666666666669
+    },
+    {
+      "task_id": "preprocess-pipeline-22",
+      "start_time": 89.42,
+      "completion_time": 139.68,
+      "state": "COMPLETED",
+      "slo_met": false,
+      "limiter_events": {
+        "memory": 1427,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.6753333333333336
+    },
+    {
+      "task_id": "llm-heavy-19",
+      "start_time": 105.96000000000001,
+      "completion_time": 141.36,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 1044,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.0325000000000002
+    },
+    {
+      "task_id": "llm-heavy-49",
+      "start_time": 107.7,
+      "completion_time": 144.04,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 1071,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.0599166666666664
+    },
+    {
+      "task_id": "preprocess-pipeline-17",
+      "start_time": 116.54,
+      "completion_time": 146.56,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 802,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.0006666666666666
+    },
+    {
+      "task_id": "llm-heavy-4",
+      "start_time": 106.38,
+      "completion_time": 147.08,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 1337,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.187083333333334
+    },
+    {
+      "task_id": "llm-heavy-39",
+      "start_time": 115.92,
+      "completion_time": 152.48,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 1088,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.066333333333333
+    },
+    {
+      "task_id": "llm-heavy-9",
+      "start_time": 109.9,
+      "completion_time": 161.76,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 1546,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.512583333333333
+    },
+    {
+      "task_id": "feature-etl-13",
+      "start_time": 134.08,
+      "completion_time": 163.9,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 1346,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.9939999999999998
+    },
+    {
+      "task_id": "llm-heavy-34",
+      "start_time": 141.36,
+      "completion_time": 171.96,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 1068,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.8924999999999998
+    },
+    {
+      "task_id": "preprocess-pipeline-12",
+      "start_time": 148.84,
+      "completion_time": 178.9,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 662,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.002
+    },
+    {
+      "task_id": "feature-etl-38",
+      "start_time": 149.18,
+      "completion_time": 179.22,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 764,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.001333333333333
+    },
+    {
+      "task_id": "llm-heavy-24",
+      "start_time": 152.48,
+      "completion_time": 180.52,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 1044,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.817833333333334
+    },
+    {
+      "task_id": "feature-etl-23",
+      "start_time": 155.68,
+      "completion_time": 185.64000000000001,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 1024,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.9986666666666669
+    },
+    {
+      "task_id": "llm-heavy-44",
+      "start_time": 144.08,
+      "completion_time": 186.20000000000002,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 1298,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.2285000000000001
+    },
+    {
+      "task_id": "preprocess-pipeline-47",
+      "start_time": 158.42000000000002,
+      "completion_time": 188.12,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 1485,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.9899999999999997
+    },
+    {
+      "task_id": "feature-etl-33",
+      "start_time": 160.26,
+      "completion_time": 190.12,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 1161,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.9953333333333337
+    },
+    {
+      "task_id": "llm-heavy-29",
+      "start_time": 147.08,
+      "completion_time": 193.44,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 1453,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.3521666666666663
+    },
+    {
+      "task_id": "preprocess-pipeline-32",
+      "start_time": 165.88,
+      "completion_time": 195.76,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 1103,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.9959999999999999
+    },
+    {
+      "task_id": "multimodal-online-1",
+      "start_time": 160.16,
+      "completion_time": 199.0,
+      "state": "COMPLETED",
+      "slo_met": false,
+      "limiter_events": {
+        "memory": 787,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.5536
+    },
+    {
+      "task_id": "llm-heavy-14",
+      "start_time": 161.76,
+      "completion_time": 203.86,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 1330,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.2279166666666674
+    },
+    {
+      "task_id": "multimodal-online-26",
+      "start_time": 175.16,
+      "completion_time": 205.48000000000002,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 562,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.2128000000000008
+    },
+    {
+      "task_id": "multimodal-online-21",
+      "start_time": 180.52,
+      "completion_time": 207.06,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 527,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.0615999999999997
+    },
+    {
+      "task_id": "feature-etl-48",
+      "start_time": 178.9,
+      "completion_time": 208.88,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 913,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.999333333333333
+    },
+    {
+      "task_id": "feature-etl-28",
+      "start_time": 178.9,
+      "completion_time": 208.96,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 782,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.002
+    },
+    {
+      "task_id": "preprocess-pipeline-27",
+      "start_time": 185.64000000000001,
+      "completion_time": 215.66,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 849,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.0006666666666661
+    },
+    {
+      "task_id": "llm-batch-40",
+      "start_time": 195.76,
+      "completion_time": 220.84,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 479,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.0032000000000005
+    },
+    {
+      "task_id": "llm-batch-35",
+      "start_time": 197.64000000000001,
+      "completion_time": 226.88,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 769,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.1695999999999993
+    },
+    {
+      "task_id": "multimodal-online-46",
+      "start_time": 234.6,
+      "completion_time": 259.34000000000003,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 1238,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.9896000000000015
+    },
+    {
+      "task_id": "llm-batch-45",
+      "start_time": 243.04,
+      "completion_time": 267.94,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 1130,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.9960000000000002
+    },
+    {
+      "task_id": "llm-batch-10",
+      "start_time": 245.84,
+      "completion_time": 270.96,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 329,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.004799999999999
+    },
+    {
+      "task_id": "llm-batch-20",
+      "start_time": 247.04,
+      "completion_time": 271.92,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 962,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.995200000000001
+    },
+    {
+      "task_id": "preprocess-pipeline-7",
+      "start_time": 244.68,
+      "completion_time": 274.76,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 695,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.0026666666666662
+    },
+    {
+      "task_id": "llm-batch-5",
+      "start_time": 254.22,
+      "completion_time": 279.12,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 905,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.9960000000000002
+    },
+    {
+      "task_id": "feature-etl-8",
+      "start_time": 268.8,
+      "completion_time": 298.74,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 896,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.9979999999999999
+    },
+    {
+      "task_id": "feature-etl-43",
+      "start_time": 274.0,
+      "completion_time": 303.98,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 816,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.999333333333334
+    },
+    {
+      "task_id": "multimodal-online-11",
+      "start_time": 282.7,
+      "completion_time": 307.68,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 675,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.9992000000000008
+    },
+    {
+      "task_id": "preprocess-pipeline-37",
+      "start_time": 282.52,
+      "completion_time": 312.64,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 676,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.0040000000000002
+    },
+    {
+      "task_id": "llm-batch-30",
+      "start_time": 289.38,
+      "completion_time": 314.44,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 577,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.0024000000000002
+    },
+    {
+      "task_id": "multimodal-online-41",
+      "start_time": 291.66,
+      "completion_time": 316.92,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 347,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.0103999999999997
+    },
+    {
+      "task_id": "preprocess-pipeline-2",
+      "start_time": 303.28000000000003,
+      "completion_time": 320.0,
+      "state": "DROPPED",
+      "slo_met": false,
+      "limiter_events": {
+        "memory": 260,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.5573333333333323
+    },
+    {
+      "task_id": "multimodal-online-6",
+      "start_time": 313.66,
+      "completion_time": 320.0,
+      "state": "DROPPED",
+      "slo_met": false,
+      "limiter_events": {
+        "memory": 105,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.253599999999999
+    }
+  ],
+  "ir_histogram": [
+    [
+      0.3,
+      1
+    ],
+    [
+      0.6,
+      1
+    ],
+    [
+      0.8,
+      1
+    ],
+    [
+      0.9,
+      1
+    ],
+    [
+      1.0,
+      34
+    ],
+    [
+      1.1,
+      3
+    ],
+    [
+      1.2,
+      5
+    ],
+    [
+      1.4,
+      1
+    ],
+    [
+      1.5,
+      1
+    ],
+    [
+      1.6,
+      1
+    ],
+    [
+      1.7,
+      1
+    ]
+  ]
+}
