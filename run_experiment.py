@@ -196,8 +196,8 @@ def cmd_plot_ir(args: argparse.Namespace) -> None:
     }
 
     scenarios = {
-        "A1-baseline": "#4F81BD",
-        "A3-sandbox": "#C0504D",
+        "baseline": "#4F81BD",
+        "sandbox": "#C0504D",
     }
 
     fig, ax = plt.subplots(figsize=(7, 5))
@@ -557,7 +557,7 @@ def plot_cdf(series: List[tuple], output_path: Path) -> Optional[Path]:
         ax.step(x, y, where="post", label=label, color=colors[idx % len(colors)])
     ax.set_xlabel("Interference Ratio")
     ax.set_ylabel("CDF")
-    ax.set_title("IR CDF")
+    # ax.set_title("IR CDF")
     ax.legend(fontsize=8, loc="lower right", framealpha=0.9)
     ax.grid(True, linestyle="--", alpha=0.5)
     fig.tight_layout()
@@ -588,6 +588,36 @@ def _configure_cn_font(plt_module) -> None:
     plt_module.rcParams["axes.unicode_minus"] = False
 
 
+def _add_compact_legend(ax, max_cols: int = 3, fontsize: int = 7):
+    """Place a smaller legend outside the plot area to avoid covering data."""
+    handles, _ = ax.get_legend_handles_labels()
+    if not handles:
+        return None
+    columns = max(1, min(max_cols, len(handles)))
+    return ax.legend(
+        fontsize=fontsize,
+        loc="upper center",
+        bbox_to_anchor=(0.5, 1.22),
+        ncol=columns,
+        frameon=True,
+        framealpha=0.9,
+        columnspacing=0.6,
+        handlelength=1.0,
+        handletextpad=0.4,
+        markerscale=0.85,
+        borderaxespad=0.3,
+    )
+
+
+def _save_figure(fig, path: Path, legend=None, dpi: int = 160) -> None:
+    """Save figure with optional legend adjustments, keeping layout tight."""
+    save_kwargs = {"dpi": dpi}
+    if legend is not None:
+        save_kwargs["bbox_extra_artists"] = (legend,)
+        save_kwargs["bbox_inches"] = "tight"
+    fig.savefig(path, **save_kwargs)
+
+
 def _avg_compute_util(summary: Dict[str, Dict[str, Dict[str, float]]]) -> float:
     nodes = summary.get("nodes", {})
     if not nodes:
@@ -599,7 +629,7 @@ def _avg_compute_util(summary: Dict[str, Dict[str, Dict[str, float]]]) -> float:
     return total / len(nodes)
 
 
-def plot_summary_bars(records: List[Dict[str, Dict]], output_dir: Path) -> None:
+def plot_summary_bars(records: List[Dict[str, Dict]], output_dir: Path, load_sweep: Optional[List[int]] = None) -> None:
     if not records:
         return
     try:
@@ -614,28 +644,49 @@ def plot_summary_bars(records: List[Dict[str, Dict]], output_dir: Path) -> None:
         ("Average compute utilization", _avg_compute_util, "compute_util.png"),
     ]
 
-    x = list(range(len(records)))
-    labels = [rec["name"] for rec in records]
+    multi_load = bool(load_sweep)
+    record_index = {(rec["name"], rec.get("num_tasks")): rec for rec in records}
+    loads = sorted({rec.get("num_tasks") for rec in records if rec.get("num_tasks") is not None}) if multi_load else []
+    scenarios = sorted({rec["name"] for rec in records})
 
     for title, extractor, filename in metrics:
         values = [extractor(rec["summary"]) for rec in records]
         fig, ax = plt.subplots(figsize=(6, 4))
-        ax.plot(x, values, marker="o", color="#4F81BD")
-        ax.set_xticks(x)
-        ax.set_xticklabels(labels, rotation=20)
-        ax.set_xlabel("Scenario")
+        legend = None
+        if multi_load:
+            for scenario in scenarios:
+                xs: List[int] = []
+                ys: List[float] = []
+                for load in loads:
+                    rec = record_index.get((scenario, load))
+                    if not rec:
+                        continue
+                    xs.append(load)
+                    ys.append(extractor(rec["summary"]))
+                if xs:
+                    ax.plot(xs, ys, marker="o", label=scenario)
+            ax.set_xlabel("Number of tasks")
+            ax.set_xticks(loads)
+            legend = _add_compact_legend(ax)
+        else:
+            x = list(range(len(records)))
+            labels = [rec.get("label", rec["name"]) for rec in records]
+            ax.plot(x, values, marker="o", color="#4F81BD")
+            ax.set_xticks(x)
+            ax.set_xticklabels(labels, rotation=20)
+            ax.set_xlabel("Scenario")
         ax.set_ylabel(f"{title} (ratio)")
         ax.set_ylim(0, max(1.0, max(values) * 1.1))
-        ax.set_title(title)
+        # ax.set_title(title)
         ax.grid(True, linestyle="--", alpha=0.4)
         fig.tight_layout()
         path = output_dir / filename
-        fig.savefig(path, dpi=160)
+        _save_figure(fig, path, legend)
         plt.close(fig)
         print(f"  {title} 图: {path}")
 
 
-def plot_drop_and_limiter(records: List[Dict[str, Dict]], output_dir: Path) -> None:
+def plot_drop_and_limiter(records: List[Dict[str, Dict]], output_dir: Path, load_sweep: Optional[List[int]] = None) -> None:
     if not records:
         return
     try:
@@ -645,48 +696,105 @@ def plot_drop_and_limiter(records: List[Dict[str, Dict]], output_dir: Path) -> N
         return
     _configure_cn_font(plt)
 
-    names = [rec["name"] for rec in records]
-    drop_values = [rec.get("drop_rate", 0.0) for rec in records]
+    multi_load = bool(load_sweep)
+    record_index = {(rec["name"], rec.get("num_tasks")): rec for rec in records}
+    loads = sorted({rec.get("num_tasks") for rec in records if rec.get("num_tasks") is not None}) if multi_load else []
+    scenarios = sorted({rec["name"] for rec in records})
 
-    # Drop rate line
-    fig, ax = plt.subplots(figsize=(6, 4))
-    ax.plot(range(len(names)), drop_values, marker="o", color="#C0504D")
-    ax.set_xticks(range(len(names)))
-    ax.set_xticklabels(names, rotation=20)
-    ax.set_xlabel("Scenario")
-    ax.set_ylabel("Drop rate (ratio)")
-    ax.set_ylim(0, max(1.0, max(drop_values) * 1.1))
-    ax.set_title("Task drop rate")
-    ax.grid(True, linestyle="--", alpha=0.4)
-    fig.tight_layout()
-    drop_path = output_dir / "drop_rate.png"
-    fig.savefig(drop_path, dpi=160)
-    plt.close(fig)
-    print(f"  Drop rate 图: {drop_path}")
+    if multi_load:
+        # Drop rate vs load
+        fig, ax = plt.subplots(figsize=(6, 4))
+        for scenario in scenarios:
+            xs: List[int] = []
+            ys: List[float] = []
+            for load in loads:
+                rec = record_index.get((scenario, load))
+                if not rec:
+                    continue
+                xs.append(load)
+                ys.append(rec.get("drop_rate", 0.0))
+            if xs:
+                ax.plot(xs, ys, marker="o", label=scenario)
+        ax.set_xlabel("Number of tasks")
+        ax.set_xticks(loads)
+        ax.set_ylabel("Drop rate (ratio)")
+        ax.set_ylim(0, max(1.0, max(rec.get("drop_rate", 0.0) for rec in records) * 1.1))
+        # ax.set_title("Task drop rate")
+        ax.grid(True, linestyle="--", alpha=0.4)
+        legend = _add_compact_legend(ax)
+        fig.tight_layout()
+        drop_path = output_dir / "drop_rate.png"
+        _save_figure(fig, drop_path, legend)
+        plt.close(fig)
+        print(f"  Drop rate 图: {drop_path}")
 
-    # Limiter stacked bar
-    compute_events = [rec.get("limiter_events", {}).get("compute", 0.0) for rec in records]
-    mem_events = [rec.get("limiter_events", {}).get("memory", 0.0) for rec in records]
-    bw_events = [rec.get("limiter_events", {}).get("bandwidth", 0.0) for rec in records]
+        # Limiter total events vs load
+        fig, ax = plt.subplots(figsize=(6, 4))
+        for scenario in scenarios:
+            xs = []
+            ys = []
+            for load in loads:
+                rec = record_index.get((scenario, load))
+                if not rec:
+                    continue
+                events = rec.get("limiter_events", {})
+                total = sum(events.get(kind, 0.0) for kind in ("memory", "compute", "bandwidth"))
+                xs.append(load)
+                ys.append(total)
+            if xs:
+                ax.plot(xs, ys, marker="o", label=scenario)
+        ax.set_xlabel("Number of tasks")
+        ax.set_xticks(loads)
+        ax.set_ylabel("Limiter triggers (count)")
+        # ax.set_title("Limiter events vs load")
+        ax.grid(True, linestyle="--", alpha=0.4)
+        legend = _add_compact_legend(ax)
+        fig.tight_layout()
+        limiter_path = output_dir / "limiter_events.png"
+        _save_figure(fig, limiter_path, legend)
+        plt.close(fig)
+        print(f"  Limiter events 图: {limiter_path}")
+    else:
+        names = [rec.get("label", rec["name"]) for rec in records]
+        drop_values = [rec.get("drop_rate", 0.0) for rec in records]
 
-    fig, ax = plt.subplots(figsize=(6, 4))
-    x = range(len(names))
-    ax.bar(x, mem_events, label="memory", color="#4F81BD")
-    ax.bar(x, compute_events, bottom=mem_events, label="compute", color="#9BBB59")
-    bottom_bw = [m + c for m, c in zip(mem_events, compute_events)]
-    ax.bar(x, bw_events, bottom=bottom_bw, label="bandwidth", color="#C0504D")
-    ax.set_xticks(x)
-    ax.set_xticklabels(names, rotation=20)
-    ax.set_xlabel("Scenario")
-    ax.set_ylabel("Limiter triggers (count)")
-    ax.set_title("Limiter events per scenario")
-    ax.legend()
-    ax.grid(True, axis="y", linestyle="--", alpha=0.4)
-    fig.tight_layout()
-    limiter_path = output_dir / "limiter_events.png"
-    fig.savefig(limiter_path, dpi=160)
-    plt.close(fig)
-    print(f"  Limiter events 图: {limiter_path}")
+        fig, ax = plt.subplots(figsize=(6, 4))
+        ax.plot(range(len(names)), drop_values, marker="o", color="#C0504D")
+        ax.set_xticks(range(len(names)))
+        ax.set_xticklabels(names, rotation=20)
+        ax.set_xlabel("Scenario")
+        ax.set_ylabel("Drop rate (ratio)")
+        ax.set_ylim(0, max(1.0, max(drop_values) * 1.1))
+        # ax.set_title("Task drop rate")
+        ax.grid(True, linestyle="--", alpha=0.4)
+        fig.tight_layout()
+        drop_path = output_dir / "drop_rate.png"
+        fig.savefig(drop_path, dpi=160)
+        plt.close(fig)
+        print(f"  Drop rate 图: {drop_path}")
+
+        compute_events = [rec.get("limiter_events", {}).get("compute", 0.0) for rec in records]
+        mem_events = [rec.get("limiter_events", {}).get("memory", 0.0) for rec in records]
+        bw_events = [rec.get("limiter_events", {}).get("bandwidth", 0.0) for rec in records]
+
+        fig, ax = plt.subplots(figsize=(6, 4))
+        x = range(len(names))
+        ax.bar(x, mem_events, label="memory", color="#4F81BD")
+        ax.bar(x, compute_events, bottom=mem_events, label="compute", color="#9BBB59")
+        bottom_bw = [m + c for m, c in zip(mem_events, compute_events)]
+        ax.bar(x, bw_events, bottom=bottom_bw, label="bandwidth", color="#C0504D")
+        ax.set_xticks(x)
+        ax.set_xticklabels(names, rotation=20)
+        ax.set_xlabel("Scenario")
+        ax.set_ylabel("Limiter triggers (count)")
+        # ax.set_title("Limiter events per scenario")
+        ax.legend()
+        ax.grid(True, axis="y", linestyle="--", alpha=0.4)
+        fig.tight_layout()
+        limiter_path = output_dir / "limiter_events.png"
+        fig.savefig(limiter_path, dpi=160)
+        plt.close(fig)
+        print(f"  Limiter events 图: {limiter_path}")
 
 
 def cmd_report(args: argparse.Namespace) -> None:
@@ -694,90 +802,101 @@ def cmd_report(args: argparse.Namespace) -> None:
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     cdf_series: List[tuple] = []
+    scenario_ir_agg: Dict[str, List[float]] = {}
     summary_records: List[Dict[str, Dict]] = []
 
-    for name in scenarios:
-        scenario = SCENARIOS[name]
-        duration = args.duration if args.duration is not None else scenario.simulation.duration
-        num_tasks = args.num_tasks if args.num_tasks is not None else scenario.num_tasks
-        arrival_mode = args.arrival_mode if args.arrival_mode is not None else scenario.arrival_mode
+    load_values = args.load_sweep or [None]
 
-        generator = WorkloadGenerator(seed=args.seed)
-        tasks = generator.generate(
-            profiles=scenario.workload_profiles,
-            num_tasks=num_tasks,
-            duration=duration,
-            arrival_mode=arrival_mode,
-        )
+    for load in load_values:
+        for name in scenarios:
+            scenario = SCENARIOS[name]
+            duration = args.duration if args.duration is not None else scenario.simulation.duration
+            base_num_tasks = args.num_tasks if args.num_tasks is not None else scenario.num_tasks
+            num_tasks = load if load is not None else base_num_tasks
+            arrival_mode = args.arrival_mode if args.arrival_mode is not None else scenario.arrival_mode
 
-        sim_config = replace(scenario.simulation, duration=duration)
-        nodes = scenario.cluster_factory()
-        engine = SimulationEngine(nodes, tasks, sim_config)
-        summary = engine.run()
+            generator = WorkloadGenerator(seed=args.seed)
+            tasks = generator.generate(
+                profiles=scenario.workload_profiles,
+                num_tasks=num_tasks,
+                duration=duration,
+                arrival_mode=arrival_mode,
+            )
 
-        completed = engine.metrics.completed_tasks
-        total_completed = len(completed) or 1
-        drop_count = sum(1 for task in completed if task.state == TaskState.DROPPED)
-        drop_rate = drop_count / total_completed
-        summary["drop_rate"] = drop_rate
-        summary["drop_count"] = drop_count
+            sim_config = replace(scenario.simulation, duration=duration)
+            nodes = scenario.cluster_factory()
+            engine = SimulationEngine(nodes, tasks, sim_config)
+            summary = engine.run()
 
-        hist_counter = bucket_ir(engine.metrics.completed_tasks, args.hist_bucket)
-        hist = [(float(f"{bucket:.3f}"), count) for bucket, count in sorted(hist_counter.items())]
+            completed = engine.metrics.completed_tasks
+            total_completed = len(completed) or 1
+            drop_count = sum(1 for task in completed if task.state == TaskState.DROPPED)
+            drop_rate = drop_count / total_completed
+            summary["drop_rate"] = drop_rate
+            summary["drop_count"] = drop_count
 
+            hist_counter = bucket_ir(engine.metrics.completed_tasks, args.hist_bucket)
+            hist = [(float(f"{bucket:.3f}"), count) for bucket, count in sorted(hist_counter.items())]
 
+            run_label = name if load is None else f"{name}_tasks{num_tasks}"
 
-        # ir_values = collect_ir(engine.metrics.completed_tasks)
-        # if ir_values:
-        #     cdf_series.append((name, ir_values, summary))
-
-        ir_values = collect_ir(engine.metrics.completed_tasks)
-        if ir_values:
-            cdf_series.append((name, ir_values, summary))
-        summary_records.append({
-            "name": name,
-            "summary": summary,
-            "drop_rate": drop_rate,
-            "limiter_events": summary.get("limiter_events", {}),
-        })
-
-        report = {
-            "scenario": name,
-            "description": scenario.description,
-            "params": {
-                "seed": args.seed,
-                "duration": duration,
+            ir_values = collect_ir(engine.metrics.completed_tasks)
+            if ir_values:
+                if args.load_sweep:
+                    scenario_ir_agg.setdefault(name, []).extend(ir_values)
+                else:
+                    cdf_series.append((run_label, ir_values, summary))
+            summary_records.append({
+                "name": name,
+                "label": run_label,
                 "num_tasks": num_tasks,
-                "arrival_mode": arrival_mode,
-            },
-            "summary": summary,
-            "cluster": describe_cluster(nodes),
-            "tasks": serialize_tasks(tasks),
-            "task_outcomes": serialize_task_outcomes(engine.metrics.completed_tasks),
-            "ir_histogram": hist,
-        }
-        json_path = output_dir / f"{name}_report.json"
-        json_path.write_text(json.dumps(report, indent=2, ensure_ascii=False))
+                "summary": summary,
+                "drop_rate": drop_rate,
+                "limiter_events": summary.get("limiter_events", {}),
+            })
 
-        png_path = None
-        if not args.no_plot and hist:
-            png_path = plot_histogram(name, hist, output_dir, args.hist_bucket)
+            report = {
+                "scenario": name,
+                "description": scenario.description,
+                "params": {
+                    "seed": args.seed,
+                    "duration": duration,
+                    "num_tasks": num_tasks,
+                    "arrival_mode": arrival_mode,
+                },
+                "summary": summary,
+                "cluster": describe_cluster(nodes),
+                "tasks": serialize_tasks(tasks),
+                "task_outcomes": serialize_task_outcomes(engine.metrics.completed_tasks),
+                "ir_histogram": hist,
+            }
+            json_path = output_dir / f"{run_label}_report.json"
+            json_path.write_text(json.dumps(report, indent=2, ensure_ascii=False))
 
-        print(
-            f"[{name}] SLO={summary['slo_rate']:.3f}  IR(avg)={summary['avg_interference']:.3f}  "
-            f"IR(p95)={summary.get('ir_p95','N/A')}  Report={json_path}"
-        )
-        if png_path:
-            print(f"  IR 直方图: {png_path}")
-        elif args.no_plot:
-            print("  已跳过 IR 直方图 (--no-plot)")
-        elif not hist:
-            print("  没有完成的任务，无法生成 IR 直方图")
+            png_path = None
+            if not args.no_plot and hist:
+                png_path = plot_histogram(run_label, hist, output_dir, args.hist_bucket)
+
+            print(
+                f"[{run_label}] SLO={summary['slo_rate']:.3f}  IR(avg)={summary['avg_interference']:.3f}  "
+                f"IR(p95)={summary.get('ir_p95','N/A')}  Report={json_path}"
+            )
+            if png_path:
+                print(f"  IR 直方图: {png_path}")
+            elif args.no_plot:
+                print("  已跳过 IR 直方图 (--no-plot)")
+            elif not hist:
+                print("  没有完成的任务，无法生成 IR 直方图")
+
+    if args.load_sweep:
+        for name, values in scenario_ir_agg.items():
+            if values:
+                cdf_series.append((name, values, {}))
 
     if not args.no_plot and cdf_series:
         plot_cdf(cdf_series, output_dir / "ir_cdf.png")
-        plot_summary_bars(summary_records, output_dir)
-        plot_drop_and_limiter(summary_records, output_dir)
+        plot_summary_bars(summary_records, output_dir, args.load_sweep)
+        plot_drop_and_limiter(summary_records, output_dir, args.load_sweep)
 
 
 # ---------------------------------------------------------------------------
@@ -837,6 +956,8 @@ def build_subcommand_parser() -> argparse.ArgumentParser:
     p_report.add_argument("--duration", type=float)
     p_report.add_argument("--num_tasks", type=int)
     p_report.add_argument("--arrival_mode")
+    p_report.add_argument("--load-sweep", type=int, nargs="+",
+                          help="指定多个任务数量，对每个场景在不同负载下重复实验")
     p_report.add_argument("--hist-bucket", type=float, default=0.1, help="IR 直方图桶宽")
     p_report.add_argument("--output-dir", default="reports", help="输出目录")
     p_report.add_argument("--no-plot", action="store_true", help="仅输出 JSON，不生成 IR 图")
