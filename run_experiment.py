@@ -217,8 +217,8 @@ def cmd_plot_ir(args: argparse.Namespace) -> None:
 
     ax.set_xlabel("Interference Ratio (ratio)")
     ax.set_ylabel("CDF (ratio)")
-    ax.set_title("IR CDF under stress load")
-    ax.legend()
+    legend = ax.legend(fontsize=8, loc="lower right", framealpha=0.85)
+    legend.get_frame().set_linewidth(0.3)
     ax.grid(True, linestyle="--", alpha=0.5)
     fig.tight_layout()
     fig.savefig(args.output, dpi=150)
@@ -553,12 +553,12 @@ def plot_cdf(series: List[tuple], output_path: Path) -> Optional[Path]:
             continue
         ir_over_1_25 = sum(1 for v in values_sorted if v > 1.25) / total * 100
         ir_over_1_5 = sum(1 for v in values_sorted if v > 1.5) / total * 100
-        label = f"{name} (IR>1.25 {ir_over_1_25:.1f}%, >1.5 {ir_over_1_5:.1f}%)"
+        friendly = _legend_label(name)
+        label = f"{friendly} (IR>1.25 {ir_over_1_25:.1f}%, >1.5 {ir_over_1_5:.1f}%)"
         ax.step(x, y, where="post", label=label, color=colors[idx % len(colors)])
-    ax.set_xlabel("Interference Ratio")
+    ax.set_xlabel("IR")
     ax.set_ylabel("CDF")
-    # ax.set_title("IR CDF")
-    ax.legend(fontsize=8, loc="lower right", framealpha=0.9)
+    ax.legend(fontsize=6, loc="lower right", framealpha=0.9)
     ax.grid(True, linestyle="--", alpha=0.5)
     fig.tight_layout()
     fig.savefig(output_path, dpi=150)
@@ -588,25 +588,49 @@ def _configure_cn_font(plt_module) -> None:
     plt_module.rcParams["axes.unicode_minus"] = False
 
 
-def _add_compact_legend(ax, max_cols: int = 3, fontsize: int = 7):
-    """Place a smaller legend outside the plot area to avoid covering data."""
+SCENARIO_DISPLAY = {
+    "A1-baseline": "baseline",
+    "A2-hard-split": "hard-split",
+    "A2P-parvagpu": "parvagpu",
+    "A3-sandbox": "sandbox",
+    "A4-no-link-gate": "sandbox-no-link-gate",
+    "A5-no-slo-guard": "sandbox-no-slo-guard",
+}
+
+
+def _display_name(name: str) -> str:
+    return SCENARIO_DISPLAY.get(name, name.split("-", 1)[-1] if "-" in name else name)
+
+
+def _legend_label(name: str) -> str:
+    if "_tasks" in name:
+        scenario, suffix = name.split("_tasks", 1)
+        return f"{_display_name(scenario)}_tasks{suffix}"
+    return _display_name(name)
+
+
+def _add_compact_legend(ax, max_cols: int = 3, fontsize: int = 7, anchor: Tuple[float, float] = (0.45, 0.93)):
+    """Place a compact legend inside the axes at a safe upper-left position."""
     handles, _ = ax.get_legend_handles_labels()
     if not handles:
         return None
-    columns = max(1, min(max_cols, len(handles)))
-    return ax.legend(
-        fontsize=fontsize,
-        loc="upper center",
-        bbox_to_anchor=(0.5, 1.22),
-        ncol=columns,
+    legend = ax.legend(
+        fontsize=max(5, fontsize - 2),
+        loc="upper left",
+        bbox_to_anchor=anchor,
+        ncol=1,
         frameon=True,
-        framealpha=0.9,
-        columnspacing=0.6,
-        handlelength=1.0,
+        framealpha=0.8,
+        columnspacing=0.5,
+        handlelength=1.2,
         handletextpad=0.4,
         markerscale=0.85,
-        borderaxespad=0.3,
+        borderaxespad=0.2,
     )
+    frame = legend.get_frame()
+    if frame is not None:
+        frame.set_linewidth(0.3)
+    return legend
 
 
 def _save_figure(fig, path: Path, legend=None, dpi: int = 160) -> None:
@@ -640,8 +664,8 @@ def plot_summary_bars(records: List[Dict[str, Dict]], output_dir: Path, load_swe
     _configure_cn_font(plt)
 
     metrics = [
-        ("SLO rate", lambda s: s.get("slo_rate", 0.0), "slo_rate.png"),
-        ("Average compute utilization", _avg_compute_util, "compute_util.png"),
+        ("SLO rate (%)", lambda s: s.get("slo_rate", 0.0) * 100, "slo_rate.png"),
+        ("Average computing utilization (%)", lambda s: _avg_compute_util(s) * 100, "compute_util.png"),
     ]
 
     multi_load = bool(load_sweep)
@@ -664,20 +688,19 @@ def plot_summary_bars(records: List[Dict[str, Dict]], output_dir: Path, load_swe
                     xs.append(load)
                     ys.append(extractor(rec["summary"]))
                 if xs:
-                    ax.plot(xs, ys, marker="o", label=scenario)
+                    ax.plot(xs, ys, marker="o", label=_display_name(scenario))
             ax.set_xlabel("Number of tasks")
             ax.set_xticks(loads)
-            legend = _add_compact_legend(ax)
+            legend = _add_compact_legend(ax, anchor=(0.15, 0.3))
         else:
             x = list(range(len(records)))
-            labels = [rec.get("label", rec["name"]) for rec in records]
+            labels = [_display_name(rec["name"]) for rec in records]
             ax.plot(x, values, marker="o", color="#4F81BD")
             ax.set_xticks(x)
             ax.set_xticklabels(labels, rotation=20)
             ax.set_xlabel("Scenario")
-        ax.set_ylabel(f"{title} (ratio)")
+        ax.set_ylabel(title)
         ax.set_ylim(0, max(1.0, max(values) * 1.1))
-        # ax.set_title(title)
         ax.grid(True, linestyle="--", alpha=0.4)
         fig.tight_layout()
         path = output_dir / filename
@@ -712,16 +735,15 @@ def plot_drop_and_limiter(records: List[Dict[str, Dict]], output_dir: Path, load
                 if not rec:
                     continue
                 xs.append(load)
-                ys.append(rec.get("drop_rate", 0.0))
+                ys.append(rec.get("drop_rate", 0.0) * 100)
             if xs:
-                ax.plot(xs, ys, marker="o", label=scenario)
+                ax.plot(xs, ys, marker="o", label=_display_name(scenario))
         ax.set_xlabel("Number of tasks")
         ax.set_xticks(loads)
-        ax.set_ylabel("Drop rate (ratio)")
-        ax.set_ylim(0, max(1.0, max(rec.get("drop_rate", 0.0) for rec in records) * 1.1))
-        # ax.set_title("Task drop rate")
+        ax.set_ylabel("Drop rate (%)")
+        ax.set_ylim(0, max(100.0, max(rec.get("drop_rate", 0.0) for rec in records) * 100))
         ax.grid(True, linestyle="--", alpha=0.4)
-        legend = _add_compact_legend(ax)
+        legend = _add_compact_legend(ax, anchor=(0.25, 0.2))
         fig.tight_layout()
         drop_path = output_dir / "drop_rate.png"
         _save_figure(fig, drop_path, legend)
@@ -742,31 +764,30 @@ def plot_drop_and_limiter(records: List[Dict[str, Dict]], output_dir: Path, load
                 xs.append(load)
                 ys.append(total)
             if xs:
-                ax.plot(xs, ys, marker="o", label=scenario)
+                ax.plot(xs, ys, marker="o", label=_display_name(scenario))
         ax.set_xlabel("Number of tasks")
         ax.set_xticks(loads)
-        ax.set_ylabel("Limiter triggers (count)")
-        # ax.set_title("Limiter events vs load")
+        ax.set_ylabel("Limiter triggers")
         ax.grid(True, linestyle="--", alpha=0.4)
-        legend = _add_compact_legend(ax)
+        legend = _add_compact_legend(ax, anchor=(0.25, 0.4))
         fig.tight_layout()
         limiter_path = output_dir / "limiter_events.png"
         _save_figure(fig, limiter_path, legend)
         plt.close(fig)
         print(f"  Limiter events 图: {limiter_path}")
     else:
-        names = [rec.get("label", rec["name"]) for rec in records]
-        drop_values = [rec.get("drop_rate", 0.0) for rec in records]
+        names = [_display_name(rec["name"]) for rec in records]
+        drop_values = [rec.get("drop_rate", 0.0) * 100 for rec in records]
 
         fig, ax = plt.subplots(figsize=(6, 4))
         ax.plot(range(len(names)), drop_values, marker="o", color="#C0504D")
         ax.set_xticks(range(len(names)))
         ax.set_xticklabels(names, rotation=20)
         ax.set_xlabel("Scenario")
-        ax.set_ylabel("Drop rate (ratio)")
-        ax.set_ylim(0, max(1.0, max(drop_values) * 1.1))
-        # ax.set_title("Task drop rate")
+        ax.set_ylabel("Drop rate (%)")
+        ax.set_ylim(0, max(100.0, max(drop_values) * 1.1))
         ax.grid(True, linestyle="--", alpha=0.4)
+        legend = ax.legend(loc="upper left", bbox_to_anchor=(0.4, 0.9), fontsize=6)
         fig.tight_layout()
         drop_path = output_dir / "drop_rate.png"
         fig.savefig(drop_path, dpi=160)
@@ -786,9 +807,8 @@ def plot_drop_and_limiter(records: List[Dict[str, Dict]], output_dir: Path, load
         ax.set_xticks(x)
         ax.set_xticklabels(names, rotation=20)
         ax.set_xlabel("Scenario")
-        ax.set_ylabel("Limiter triggers (count)")
-        # ax.set_title("Limiter events per scenario")
-        ax.legend()
+        ax.set_ylabel("Limiter triggers")
+        ax.legend(loc="upper left", bbox_to_anchor=(0.4, 0.9), fontsize=6)
         ax.grid(True, axis="y", linestyle="--", alpha=0.4)
         fig.tight_layout()
         limiter_path = output_dir / "limiter_events.png"

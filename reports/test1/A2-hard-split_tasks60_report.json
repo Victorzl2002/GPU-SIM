@@ -11,64 +11,64 @@
     "nodes": {
       "nv-node-1": {
         "utilization": {
-          "compute": 0.3027136204693219,
-          "memory": 0.3053664878057676,
-          "bandwidth": 0.25068576507986645
+          "compute": 0.30497605992038196,
+          "memory": 0.31095893797175,
+          "bandwidth": 0.251774206171397
         },
         "stability": {
-          "compute": 0.20006538476832983,
-          "memory": 0.16029442611910066,
-          "bandwidth": 0.16253624848431153
+          "compute": 0.19418375948381147,
+          "memory": 0.15706664765069708,
+          "bandwidth": 0.15696022236499962
         }
       },
       "nv-node-2": {
         "utilization": {
-          "compute": 0.4660112377052496,
-          "memory": 0.5006819735988477,
-          "bandwidth": 0.3974885087581694
+          "compute": 0.37692066980780164,
+          "memory": 0.4418831289454932,
+          "bandwidth": 0.3227995193248154
         },
         "stability": {
-          "compute": 0.2892564928404712,
-          "memory": 0.25519962747498554,
-          "bandwidth": 0.2601254303264767
+          "compute": 0.23606190974678126,
+          "memory": 0.2229284666596814,
+          "bandwidth": 0.2119399662705317
         }
       },
       "asc-node-1": {
         "utilization": {
-          "compute": 0.1297220855900654,
-          "memory": 0.20008068672157497,
-          "bandwidth": 0.14044913035239442
+          "compute": 0.1253981830162959,
+          "memory": 0.19705236187684694,
+          "bandwidth": 0.13743037330859562
         },
         "stability": {
-          "compute": 0.08405708117467667,
-          "memory": 0.12052154768115603,
-          "bandwidth": 0.09064075391124378
+          "compute": 0.08222830107468622,
+          "memory": 0.11914084530347227,
+          "bandwidth": 0.08948232377879521
         }
       },
       "asc-node-2": {
         "utilization": {
-          "compute": 0.1194189273995582,
-          "memory": 0.19735847390873892,
-          "bandwidth": 0.1333163238950402
+          "compute": 0.1182005262556721,
+          "memory": 0.19528478345866984,
+          "bandwidth": 0.13172006839254558
         },
         "stability": {
-          "compute": 0.126175648446413,
-          "memory": 0.20851680428335684,
-          "bandwidth": 0.14085661646408162
+          "compute": 0.12573712298540088,
+          "memory": 0.20773379798307018,
+          "bandwidth": 0.14012004996419797
         }
       }
     },
     "slo_rate": 0.55,
-    "avg_interference": 0.8997918918918919,
+    "avg_interference": 0.9348944444444445,
     "limiter_events": {
       "compute": 0.0,
       "memory": 0.0,
       "bandwidth": 0.0
     },
-    "duration_p95": 154.28749291138683,
-    "duration_p99": 189.6638366860716,
-    "ir_p95": 1.0057333333333338,
-    "ir_p99": 1.0100000000000005,
+    "duration_p95": 159.53430327464267,
+    "duration_p99": 204.1798979392127,
+    "ir_p95": 1.0078333333333327,
+    "ir_p99": 1.0105466666666667,
     "slo_violations": 27,
     "ir_over_1_5_ratio": 0.0,
     "ir_over_2_ratio": 0.0,
@@ -227,7 +227,7 @@
         "period": 67.22573690680733,
         "spike_probability": 0.0031721975314827977,
         "spike_amp": 0.06809771549428338,
-        "phase": 0.7028162146677024
+        "phase": 0.7277436553184693
       },
       "workload": 2700
     },
@@ -257,7 +257,7 @@
         "period": 40.30241435045545,
         "spike_probability": 0.0002628780194513347,
         "spike_amp": 0.020013996914081397,
-        "phase": 0.5224112940034712
+        "phase": 0.9400256138954312
       },
       "workload": 4000
     },
@@ -286,7 +286,7 @@
         "period": 31.950098069591146,
         "spike_probability": 0.0035805994139409807,
         "spike_amp": 0.059615390911482255,
-        "phase": 0.8825727285493963
+        "phase": 0.3980290236697771
       },
       "workload": 3000
     },
@@ -315,7 +315,7 @@
         "period": 52.63310445048154,
         "spike_probability": 0.0007427524266544572,
         "spike_amp": 0.03513546539342464,
-        "phase": 0.632967261566273
+        "phase": 0.9478441480786327
       },
       "workload": 3000
     },
@@ -345,7 +345,7 @@
         "period": 53.180190651975366,
         "spike_probability": 0.0034033208804041025,
         "spike_amp": 0.04935765889158527,
-        "phase": 0.28143812673950586
+        "phase": 0.8827392103271603
       },
       "workload": 2700
     },
@@ -374,7 +374,7 @@
         "period": 51.17200736481098,
         "spike_probability": 0.0031945673446309203,
         "spike_amp": 0.04234385256354387,
-        "phase": 0.6129882655870746
+        "phase": 0.3464538489750064
       },
       "workload": 1800
     },
@@ -404,7 +404,7 @@
         "period": 41.45600126106635,
         "spike_probability": 0.000289994623873534,
         "spike_amp": 0.05044614399136521,
-        "phase": 0.7502125492329128
+        "phase": 0.14637348860892985
       },
       "workload": 4000
     },
@@ -434,7 +434,7 @@
         "period": 68.72457800419713,
         "spike_probability": 0.0019791924753472406,
         "spike_amp": 0.04408320907206209,
-        "phase": 0.45482409065770635
+        "phase": 0.9318127144573395
       },
       "workload": 4000
     },
@@ -463,7 +463,7 @@
         "period": 46.307181960788036,
         "spike_probability": 0.00362596635223689,
         "spike_amp": 0.05338853749413279,
-        "phase": 0.4111831249914847
+        "phase": 0.9888465096633073
       },
       "workload": 3000
     },
@@ -492,7 +492,7 @@
         "period": 54.58946529907027,
         "spike_probability": 0.0035799672001615573,
         "spike_amp": 0.0727454416140434,
-        "phase": 0.7258004855417775
+        "phase": 0.6582409881711064
       },
       "workload": 1800
     },
@@ -522,7 +522,7 @@
         "period": 45.125245499502554,
         "spike_probability": 0.004685106006381212,
         "spike_amp": 0.0792822834921716,
-        "phase": 0.09635471403965501
+        "phase": 0.735783678642253
       },
       "workload": 2700
     },
@@ -551,7 +551,7 @@
         "period": 10.177180715446811,
         "spike_probability": 0.1761115197229362,
         "spike_amp": 1.2100099375283537,
-        "phase": 0.07932742751983457
+        "phase": 0.4421926008413415
       },
       "workload": 7200
     },
@@ -580,7 +580,7 @@
         "period": 7.884883022260749,
         "spike_probability": 0.20855618635076387,
         "spike_amp": 1.2359553129112326,
-        "phase": 0.1119622425953467
+        "phase": 0.0065608133388781464
       },
       "workload": 7200
     },
@@ -609,7 +609,7 @@
         "period": 10.023259787452071,
         "spike_probability": 0.17819332823066295,
         "spike_amp": 1.172663880197746,
-        "phase": 0.1318765641588021
+        "phase": 0.47150096033788613
       },
       "workload": 7200
     },
@@ -638,7 +638,7 @@
         "period": 11.854410564616623,
         "spike_probability": 0.1993948778849328,
         "spike_amp": 1.2147681431697455,
-        "phase": 0.8084233846796433
+        "phase": 0.3916734836771427
       },
       "workload": 7200
     },
@@ -667,7 +667,7 @@
         "period": 8.770171717798595,
         "spike_probability": 0.16680483789065445,
         "spike_amp": 1.1351287383445197,
-        "phase": 0.8590081592406744
+        "phase": 0.941851086538824
       },
       "workload": 7200
     },
@@ -696,7 +696,7 @@
         "period": 26.039307447036165,
         "spike_probability": 0.00475492786437351,
         "spike_amp": 0.05169544370252749,
-        "phase": 0.4161308863195712
+        "phase": 0.8790495233635374
       },
       "workload": 1800
     },
@@ -725,7 +725,7 @@
         "period": 9.073573706780733,
         "spike_probability": 0.15642907925907518,
         "spike_amp": 1.3955249732402297,
-        "phase": 0.8355623209033836
+        "phase": 0.2407725377561275
       },
       "workload": 7200
     },
@@ -754,7 +754,7 @@
         "period": 10.195307293081715,
         "spike_probability": 0.23765354817805934,
         "spike_amp": 1.3826541764910727,
-        "phase": 0.06528846730965832
+        "phase": 0.03917719034790268
       },
       "workload": 7200
     },
@@ -783,7 +783,7 @@
         "period": 6.302278303257196,
         "spike_probability": 0.17017682487685,
         "spike_amp": 1.1935977212235431,
-        "phase": 0.24256167035858278
+        "phase": 0.31426533442947446
       },
       "workload": 7200
     },
@@ -812,7 +812,7 @@
         "period": 11.460102337893339,
         "spike_probability": 0.18537840239532588,
         "spike_amp": 1.23744829594152,
-        "phase": 0.4353328797167718
+        "phase": 0.9679561216303069
       },
       "workload": 7200
     },
@@ -841,7 +841,7 @@
         "period": 11.458662825310338,
         "spike_probability": 0.228230288409809,
         "spike_amp": 1.3250421379491375,
-        "phase": 0.7829671019041267
+        "phase": 0.413045246472446
       },
       "workload": 7200
     },
@@ -871,7 +871,7 @@
         "period": 45.969525662197015,
         "spike_probability": 0.002419173282081347,
         "spike_amp": 0.025153079693369936,
-        "phase": 0.34808360742432887
+        "phase": 0.9172040024382442
       },
       "workload": 2700
     },
@@ -900,7 +900,7 @@
         "period": 8.354273441347612,
         "spike_probability": 0.1898978832320273,
         "spike_amp": 1.1310611281130973,
-        "phase": 0.916087407717158
+        "phase": 0.06318221145997682
       },
       "workload": 7200
     },
@@ -929,7 +929,7 @@
         "period": 6.262728400149515,
         "spike_probability": 0.23352895432338938,
         "spike_amp": 1.3675827067635533,
-        "phase": 0.8078584250987324
+        "phase": 0.5013092022345972
       },
       "workload": 7200
     },
@@ -958,7 +958,7 @@
         "period": 56.072214571119005,
         "spike_probability": 0.002577457165353892,
         "spike_amp": 0.05705556496454765,
-        "phase": 0.5834512345120121
+        "phase": 0.1199729379972212
       },
       "workload": 1800
     },
@@ -987,7 +987,7 @@
         "period": 62.208345610241714,
         "spike_probability": 0.0006190098057482279,
         "spike_amp": 0.03339433787642087,
-        "phase": 0.8915964933115886
+        "phase": 0.07731710857035012
       },
       "workload": 3000
     },
@@ -1017,7 +1017,7 @@
         "period": 68.2803940013176,
         "spike_probability": 0.0048631149897318815,
         "spike_amp": 0.0528244024471345,
-        "phase": 0.1724091004426329
+        "phase": 0.6998960885804715
       },
       "workload": 4000
     },
@@ -1047,7 +1047,7 @@
         "period": 46.82332286536105,
         "spike_probability": 0.002945617518661278,
         "spike_amp": 0.035764797157912274,
-        "phase": 0.7528826387803081
+        "phase": 0.3710442427604056
       },
       "workload": 2700
     },
@@ -1076,7 +1076,7 @@
         "period": 33.808509976026905,
         "spike_probability": 0.00159262784168847,
         "spike_amp": 0.06332905010847115,
-        "phase": 0.9351684096240407
+        "phase": 0.8201123459419325
       },
       "workload": 1800
     },
@@ -1105,7 +1105,7 @@
         "period": 34.19680134743004,
         "spike_probability": 0.0031203319871890914,
         "spike_amp": 0.07401850027304685,
-        "phase": 0.608531563966828
+        "phase": 0.30465321817762603
       },
       "workload": 1800
     },
@@ -1135,7 +1135,7 @@
         "period": 55.948378106081115,
         "spike_probability": 0.004912202702073986,
         "spike_amp": 0.04056227752504847,
-        "phase": 0.8021230677035183
+        "phase": 0.5880673371893559
       },
       "workload": 2700
     },
@@ -1164,7 +1164,7 @@
         "period": 44.94617771098475,
         "spike_probability": 0.003062639421722302,
         "spike_amp": 0.0503331878510733,
-        "phase": 0.3335684508625595
+        "phase": 0.33114750091769374
       },
       "workload": 1800
     },
@@ -1194,7 +1194,7 @@
         "period": 42.97800266300166,
         "spike_probability": 0.00020833478845576348,
         "spike_amp": 0.021349648818215453,
-        "phase": 0.48546485369181713
+        "phase": 0.1541337402757632
       },
       "workload": 2700
     },
@@ -1223,7 +1223,7 @@
         "period": 35.34733242414241,
         "spike_probability": 0.00015580263144754247,
         "spike_amp": 0.02798559187521929,
-        "phase": 0.9666092347177128
+        "phase": 0.5356833554575403
       },
       "workload": 3000
     },
@@ -1253,7 +1253,7 @@
         "period": 50.21332601127785,
         "spike_probability": 0.00124247160521545,
         "spike_amp": 0.03661502422788689,
-        "phase": 0.6430714891853201
+        "phase": 0.7194644413536762
       },
       "workload": 2700
     },
@@ -1282,7 +1282,7 @@
         "period": 27.447484155479632,
         "spike_probability": 0.0006490929057544143,
         "spike_amp": 0.02424336893504037,
-        "phase": 0.5954366673866254
+        "phase": 0.32396232561135685
       },
       "workload": 1800
     },
@@ -1311,7 +1311,7 @@
         "period": 65.71834430799578,
         "spike_probability": 0.0040325099101609805,
         "spike_amp": 0.028770458524632447,
-        "phase": 0.6734771264094795
+        "phase": 0.7286106018933719
       },
       "workload": 3000
     },
@@ -1340,7 +1340,7 @@
         "period": 62.17698633168495,
         "spike_probability": 0.0010552116866407442,
         "spike_amp": 0.03511008868192723,
-        "phase": 0.8419685318248958
+        "phase": 0.44056503334644914
       },
       "workload": 1800
     },
@@ -1369,7 +1369,7 @@
         "period": 48.29374259095775,
         "spike_probability": 0.001777812716774791,
         "spike_amp": 0.021738809044481923,
-        "phase": 0.44825323947515094
+        "phase": 0.6834099468887992
       },
       "workload": 3000
     },
@@ -1399,7 +1399,7 @@
         "period": 60.05488435305515,
         "spike_probability": 0.0013522304876065455,
         "spike_amp": 0.02777333355834064,
-        "phase": 0.9855261945247045
+        "phase": 0.8523471525655338
       },
       "workload": 4000
     },
@@ -1429,7 +1429,7 @@
         "period": 30.89427334042527,
         "spike_probability": 7.121469078052778e-05,
         "spike_amp": 0.07825341063426586,
-        "phase": 0.18361231077755658
+        "phase": 0.48591196897802624
       },
       "workload": 2700
     },
@@ -1459,7 +1459,7 @@
         "period": 30.47298794728813,
         "spike_probability": 0.002210590441375218,
         "spike_amp": 0.024352765979389297,
-        "phase": 0.6107188179810933
+        "phase": 0.04551612154593232
       },
       "workload": 4000
     },
@@ -1488,7 +1488,7 @@
         "period": 67.05892779020593,
         "spike_probability": 0.0005314067251354571,
         "spike_amp": 0.06913520842050283,
-        "phase": 0.1120862758096709
+        "phase": 0.10875738173955574
       },
       "workload": 3000
     },
@@ -1518,7 +1518,7 @@
         "period": 47.696697306495736,
         "spike_probability": 0.004174687967185132,
         "spike_amp": 0.06828065634492625,
-        "phase": 0.34004024996077753
+        "phase": 0.0692912243289795
       },
       "workload": 4000
     },
@@ -1548,7 +1548,7 @@
         "period": 40.61504599575365,
         "spike_probability": 9.081553647290853e-05,
         "spike_amp": 0.035026925371713646,
-        "phase": 0.4201374506640564
+        "phase": 0.9078271799148027
       },
       "workload": 4000
     },
@@ -1578,7 +1578,7 @@
         "period": 56.28829148231467,
         "spike_probability": 0.0029718493855250923,
         "spike_amp": 0.054793712256949526,
-        "phase": 0.9735301046852622
+        "phase": 0.7234032055606394
       },
       "workload": 2700
     },
@@ -1608,7 +1608,7 @@
         "period": 64.21398883568347,
         "spike_probability": 0.00040290650600069314,
         "spike_amp": 0.04695124405695986,
-        "phase": 0.8868478973605555
+        "phase": 0.78137773943561
       },
       "workload": 4000
     },
@@ -1638,7 +1638,7 @@
         "period": 35.03687528964333,
         "spike_probability": 0.004057556233867975,
         "spike_amp": 0.07909556303545344,
-        "phase": 0.6122686807994019
+        "phase": 0.1372222780323139
       },
       "workload": 4000
     },
@@ -1668,7 +1668,7 @@
         "period": 48.63384267151531,
         "spike_probability": 0.004375687477867145,
         "spike_amp": 0.06376671736635306,
-        "phase": 0.39802186864538314
+        "phase": 0.014721930663896154
       },
       "workload": 4000
     },
@@ -1697,7 +1697,7 @@
         "period": 54.66847701869575,
         "spike_probability": 0.0003302517811107597,
         "spike_amp": 0.06420729971253503,
-        "phase": 0.45452397172639736
+        "phase": 0.5389016751717118
       },
       "workload": 1800
     },
@@ -1726,7 +1726,7 @@
         "period": 27.730124241874886,
         "spike_probability": 0.0035074601065221197,
         "spike_amp": 0.05882773127166012,
-        "phase": 0.8753916045935348
+        "phase": 0.5605796109586769
       },
       "workload": 1800
     },
@@ -1755,7 +1755,7 @@
         "period": 40.26182997780863,
         "spike_probability": 0.002765320592290175,
         "spike_amp": 0.07560015704427363,
-        "phase": 0.9825469543049916
+        "phase": 0.8575464777614623
       },
       "workload": 1800
     },
@@ -1785,7 +1785,7 @@
         "period": 42.921559362277236,
         "spike_probability": 0.002436303874954401,
         "spike_amp": 0.07939228728465719,
-        "phase": 0.971624738941229
+        "phase": 0.5404973787035847
       },
       "workload": 2700
     },
@@ -1814,7 +1814,7 @@
         "period": 43.68834327452643,
         "spike_probability": 0.001793855826658124,
         "spike_amp": 0.07305156963189302,
-        "phase": 0.11522998591598776
+        "phase": 0.4134679153266071
       },
       "workload": 3000
     },
@@ -1844,7 +1844,7 @@
         "period": 48.932123309617026,
         "spike_probability": 0.0026175329279358316,
         "spike_amp": 0.021122292074325203,
-        "phase": 0.5033103387988236
+        "phase": 0.04998331940880918
       },
       "workload": 4000
     },
@@ -1873,7 +1873,7 @@
         "period": 66.36271788302972,
         "spike_probability": 0.002852974626966269,
         "spike_amp": 0.062025046792797064,
-        "phase": 0.48143904399200255
+        "phase": 0.07997976793800143
       },
       "workload": 3000
     },
@@ -1903,7 +1903,7 @@
         "period": 27.09622062779903,
         "spike_probability": 0.004292342295243398,
         "spike_amp": 0.03737655717990057,
-        "phase": 0.7570668073738587
+        "phase": 0.20161002827101537
       },
       "workload": 2700
     },
@@ -1932,7 +1932,7 @@
         "period": 42.1731972975662,
         "spike_probability": 0.0023732181369859303,
         "spike_amp": 0.05016584038258398,
-        "phase": 0.11463789869647534
+        "phase": 0.15621370871565232
       },
       "workload": 3000
     },
@@ -1961,7 +1961,7 @@
         "period": 31.839304059722714,
         "spike_probability": 0.002444815502379028,
         "spike_amp": 0.022352435422846262,
-        "phase": 0.0696395864705821
+        "phase": 0.22004643563798942
       },
       "workload": 3000
     }
@@ -1970,7 +1970,7 @@
     {
       "task_id": "preprocess-pipeline-42",
       "start_time": 18.42,
-      "completion_time": 48.120000000000005,
+      "completion_time": 48.1,
       "state": "COMPLETED",
       "slo_met": true,
       "limiter_events": {
@@ -1978,12 +1978,12 @@
         "bandwidth": 0,
         "compute": 0
       },
-      "interference_ratio": 0.9900000000000001
+      "interference_ratio": 0.9893333333333333
     },
     {
       "task_id": "preprocess-pipeline-57",
       "start_time": 33.58,
-      "completion_time": 63.32,
+      "completion_time": 63.86,
       "state": "COMPLETED",
       "slo_met": true,
       "limiter_events": {
@@ -1991,12 +1991,12 @@
         "bandwidth": 0,
         "compute": 0
       },
-      "interference_ratio": 0.9913333333333334
+      "interference_ratio": 1.0093333333333334
     },
     {
       "task_id": "feature-etl-3",
       "start_time": 37.7,
-      "completion_time": 67.82000000000001,
+      "completion_time": 67.6,
       "state": "COMPLETED",
       "slo_met": true,
       "limiter_events": {
@@ -2004,12 +2004,12 @@
         "bandwidth": 0,
         "compute": 0
       },
-      "interference_ratio": 1.0040000000000002
+      "interference_ratio": 0.9966666666666664
     },
     {
       "task_id": "llm-batch-15",
-      "start_time": 48.120000000000005,
-      "completion_time": 73.12,
+      "start_time": 48.1,
+      "completion_time": 73.08,
       "state": "COMPLETED",
       "slo_met": true,
       "limiter_events": {
@@ -2017,12 +2017,12 @@
         "bandwidth": 0,
         "compute": 0
       },
-      "interference_ratio": 1.0
+      "interference_ratio": 0.9991999999999999
     },
     {
       "task_id": "multimodal-online-36",
-      "start_time": 63.32,
-      "completion_time": 88.22,
+      "start_time": 63.86,
+      "completion_time": 88.96000000000001,
       "state": "COMPLETED",
       "slo_met": true,
       "limiter_events": {
@@ -2030,12 +2030,12 @@
         "bandwidth": 0,
         "compute": 0
       },
-      "interference_ratio": 0.996
+      "interference_ratio": 1.0040000000000004
     },
     {
       "task_id": "multimodal-online-16",
-      "start_time": 73.12,
-      "completion_time": 97.96000000000001,
+      "start_time": 73.08,
+      "completion_time": 98.16,
       "state": "COMPLETED",
       "slo_met": true,
       "limiter_events": {
@@ -2043,12 +2043,12 @@
         "bandwidth": 0,
         "compute": 0
       },
-      "interference_ratio": 0.9936000000000001
+      "interference_ratio": 1.0031999999999999
     },
     {
       "task_id": "feature-etl-53",
       "start_time": 74.5,
-      "completion_time": 104.32000000000001,
+      "completion_time": 104.28,
       "state": "COMPLETED",
       "slo_met": true,
       "limiter_events": {
@@ -2056,12 +2056,12 @@
         "bandwidth": 0,
         "compute": 0
       },
-      "interference_ratio": 0.9940000000000002
+      "interference_ratio": 0.9926666666666667
     },
     {
-      "task_id": "multimodal-online-31",
-      "start_time": 88.22,
-      "completion_time": 113.26,
+      "task_id": "preprocess-pipeline-22",
+      "start_time": 89.42,
+      "completion_time": 119.38,
       "state": "COMPLETED",
       "slo_met": true,
       "limiter_events": {
@@ -2069,12 +2069,12 @@
         "bandwidth": 0,
         "compute": 0
       },
-      "interference_ratio": 1.0016000000000003
+      "interference_ratio": 0.9986666666666665
     },
     {
       "task_id": "llm-batch-0",
-      "start_time": 97.96000000000001,
-      "completion_time": 122.88,
+      "start_time": 98.16,
+      "completion_time": 123.34,
       "state": "COMPLETED",
       "slo_met": true,
       "limiter_events": {
@@ -2082,194 +2082,12 @@
         "bandwidth": 0,
         "compute": 0
       },
-      "interference_ratio": 0.9967999999999995
-    },
-    {
-      "task_id": "llm-batch-25",
-      "start_time": 113.26,
-      "completion_time": 137.94,
-      "state": "COMPLETED",
-      "slo_met": true,
-      "limiter_events": {
-        "memory": 0,
-        "bandwidth": 0,
-        "compute": 0
-      },
-      "interference_ratio": 0.9871999999999997
+      "interference_ratio": 1.0072000000000003
     },
     {
       "task_id": "feature-etl-18",
       "start_time": 109.66,
-      "completion_time": 139.70000000000002,
-      "state": "COMPLETED",
-      "slo_met": true,
-      "limiter_events": {
-        "memory": 0,
-        "bandwidth": 0,
-        "compute": 0
-      },
-      "interference_ratio": 1.001333333333334
-    },
-    {
-      "task_id": "preprocess-pipeline-22",
-      "start_time": 122.88,
-      "completion_time": 152.8,
-      "state": "COMPLETED",
-      "slo_met": true,
-      "limiter_events": {
-        "memory": 0,
-        "bandwidth": 0,
-        "compute": 0
-      },
-      "interference_ratio": 0.9973333333333338
-    },
-    {
-      "task_id": "feature-etl-13",
-      "start_time": 136.70000000000002,
-      "completion_time": 166.52,
-      "state": "COMPLETED",
-      "slo_met": true,
-      "limiter_events": {
-        "memory": 0,
-        "bandwidth": 0,
-        "compute": 0
-      },
-      "interference_ratio": 0.9939999999999998
-    },
-    {
-      "task_id": "preprocess-pipeline-17",
-      "start_time": 137.94,
-      "completion_time": 168.02,
-      "state": "COMPLETED",
-      "slo_met": true,
-      "limiter_events": {
-        "memory": 0,
-        "bandwidth": 0,
-        "compute": 0
-      },
-      "interference_ratio": 1.002666666666667
-    },
-    {
-      "task_id": "feature-etl-38",
-      "start_time": 149.18,
-      "completion_time": 179.22,
-      "state": "COMPLETED",
-      "slo_met": true,
-      "limiter_events": {
-        "memory": 0,
-        "bandwidth": 0,
-        "compute": 0
-      },
-      "interference_ratio": 1.001333333333333
-    },
-    {
-      "task_id": "llm-heavy-19",
-      "start_time": 152.8,
-      "completion_time": 181.04,
-      "state": "COMPLETED",
-      "slo_met": true,
-      "limiter_events": {
-        "memory": 0,
-        "bandwidth": 0,
-        "compute": 0
-      },
-      "interference_ratio": 0.8236666666666661
-    },
-    {
-      "task_id": "preprocess-pipeline-12",
-      "start_time": 168.02,
-      "completion_time": 198.12,
-      "state": "COMPLETED",
-      "slo_met": true,
-      "limiter_events": {
-        "memory": 0,
-        "bandwidth": 0,
-        "compute": 0
-      },
-      "interference_ratio": 1.0033333333333332
-    },
-    {
-      "task_id": "feature-etl-23",
-      "start_time": 171.24,
-      "completion_time": 201.22,
-      "state": "COMPLETED",
-      "slo_met": true,
-      "limiter_events": {
-        "memory": 0,
-        "bandwidth": 0,
-        "compute": 0
-      },
-      "interference_ratio": 0.999333333333333
-    },
-    {
-      "task_id": "llm-heavy-4",
-      "start_time": 181.04,
-      "completion_time": 207.46,
-      "state": "COMPLETED",
-      "slo_met": true,
-      "limiter_events": {
-        "memory": 0,
-        "bandwidth": 0,
-        "compute": 0
-      },
-      "interference_ratio": 0.7705833333333338
-    },
-    {
-      "task_id": "feature-etl-33",
-      "start_time": 179.22,
-      "completion_time": 209.36,
-      "state": "COMPLETED",
-      "slo_met": true,
-      "limiter_events": {
-        "memory": 0,
-        "bandwidth": 0,
-        "compute": 0
-      },
-      "interference_ratio": 1.0046666666666673
-    },
-    {
-      "task_id": "llm-heavy-49",
-      "start_time": 198.12,
-      "completion_time": 229.78,
-      "state": "COMPLETED",
-      "slo_met": true,
-      "limiter_events": {
-        "memory": 0,
-        "bandwidth": 0,
-        "compute": 0
-      },
-      "interference_ratio": 0.9234166666666666
-    },
-    {
-      "task_id": "llm-batch-50",
-      "start_time": 209.36,
-      "completion_time": 234.3,
-      "state": "COMPLETED",
-      "slo_met": true,
-      "limiter_events": {
-        "memory": 0,
-        "bandwidth": 0,
-        "compute": 0
-      },
-      "interference_ratio": 0.9975999999999999
-    },
-    {
-      "task_id": "llm-heavy-59",
-      "start_time": 207.46,
-      "completion_time": 234.68,
-      "state": "COMPLETED",
-      "slo_met": true,
-      "limiter_events": {
-        "memory": 0,
-        "bandwidth": 0,
-        "compute": 0
-      },
-      "interference_ratio": 0.7939166666666666
-    },
-    {
-      "task_id": "feature-etl-48",
-      "start_time": 208.38,
-      "completion_time": 238.36,
+      "completion_time": 139.64000000000001,
       "state": "COMPLETED",
       "slo_met": true,
       "limiter_events": {
@@ -2280,9 +2098,9 @@
       "interference_ratio": 0.999333333333334
     },
     {
-      "task_id": "llm-heavy-9",
-      "start_time": 229.78,
-      "completion_time": 260.44,
+      "task_id": "llm-batch-25",
+      "start_time": 119.38,
+      "completion_time": 144.66,
       "state": "COMPLETED",
       "slo_met": true,
       "limiter_events": {
@@ -2290,12 +2108,194 @@
         "bandwidth": 0,
         "compute": 0
       },
-      "interference_ratio": 0.8942499999999999
+      "interference_ratio": 1.0112
+    },
+    {
+      "task_id": "multimodal-online-31",
+      "start_time": 123.34,
+      "completion_time": 148.38,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 0,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.0015999999999996
+    },
+    {
+      "task_id": "feature-etl-13",
+      "start_time": 134.08,
+      "completion_time": 164.26,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 0,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.0059999999999993
+    },
+    {
+      "task_id": "llm-batch-50",
+      "start_time": 148.4,
+      "completion_time": 173.36,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 0,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.9984000000000003
+    },
+    {
+      "task_id": "preprocess-pipeline-17",
+      "start_time": 144.66,
+      "completion_time": 174.62,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 0,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.9986666666666669
+    },
+    {
+      "task_id": "llm-heavy-19",
+      "start_time": 148.38,
+      "completion_time": 175.54,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 0,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.7921666666666666
+    },
+    {
+      "task_id": "feature-etl-38",
+      "start_time": 164.26,
+      "completion_time": 194.24,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 0,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.999333333333334
+    },
+    {
+      "task_id": "llm-heavy-49",
+      "start_time": 175.54,
+      "completion_time": 203.38,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 0,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.8120000000000002
+    },
+    {
+      "task_id": "feature-etl-23",
+      "start_time": 173.36,
+      "completion_time": 203.4,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 0,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.001333333333333
+    },
+    {
+      "task_id": "llm-heavy-4",
+      "start_time": 174.62,
+      "completion_time": 205.84,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 0,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.9105833333333333
+    },
+    {
+      "task_id": "feature-etl-33",
+      "start_time": 194.78,
+      "completion_time": 224.78,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 0,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.0
+    },
+    {
+      "task_id": "multimodal-online-1",
+      "start_time": 205.84,
+      "completion_time": 230.9,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 0,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.0024000000000002
+    },
+    {
+      "task_id": "llm-heavy-59",
+      "start_time": 203.38,
+      "completion_time": 232.92000000000002,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 0,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.8615833333333339
+    },
+    {
+      "task_id": "preprocess-pipeline-12",
+      "start_time": 203.4,
+      "completion_time": 233.38,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 0,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.999333333333333
+    },
+    {
+      "task_id": "feature-etl-48",
+      "start_time": 224.78,
+      "completion_time": 254.8,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 0,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.000666666666667
     },
     {
       "task_id": "llm-heavy-39",
-      "start_time": 234.68,
-      "completion_time": 263.84000000000003,
+      "start_time": 232.92000000000002,
+      "completion_time": 261.5,
       "state": "COMPLETED",
       "slo_met": true,
       "limiter_events": {
@@ -2303,12 +2303,25 @@
         "bandwidth": 0,
         "compute": 0
       },
-      "interference_ratio": 0.8505000000000007
+      "interference_ratio": 0.8335833333333329
+    },
+    {
+      "task_id": "llm-heavy-9",
+      "start_time": 230.9,
+      "completion_time": 263.02,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 0,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.9368333333333326
     },
     {
       "task_id": "feature-etl-28",
-      "start_time": 234.3,
-      "completion_time": 264.6,
+      "start_time": 233.38,
+      "completion_time": 263.24,
       "state": "COMPLETED",
       "slo_met": true,
       "limiter_events": {
@@ -2316,12 +2329,51 @@
         "bandwidth": 0,
         "compute": 0
       },
-      "interference_ratio": 1.0100000000000005
+      "interference_ratio": 0.9953333333333337
+    },
+    {
+      "task_id": "llm-heavy-34",
+      "start_time": 261.5,
+      "completion_time": 287.0,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 0,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.74375
+    },
+    {
+      "task_id": "preprocess-pipeline-47",
+      "start_time": 263.02,
+      "completion_time": 293.14,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 0,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.0040000000000002
     },
     {
       "task_id": "feature-etl-58",
-      "start_time": 258.54,
-      "completion_time": 288.48,
+      "start_time": 263.24,
+      "completion_time": 293.46,
+      "state": "COMPLETED",
+      "slo_met": true,
+      "limiter_events": {
+        "memory": 0,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 1.0073333333333323
+    },
+    {
+      "task_id": "feature-etl-8",
+      "start_time": 268.8,
+      "completion_time": 298.74,
       "state": "COMPLETED",
       "slo_met": true,
       "limiter_events": {
@@ -2332,22 +2384,9 @@
       "interference_ratio": 0.9979999999999999
     },
     {
-      "task_id": "llm-heavy-34",
-      "start_time": 260.44,
-      "completion_time": 290.94,
-      "state": "COMPLETED",
-      "slo_met": true,
-      "limiter_events": {
-        "memory": 0,
-        "bandwidth": 0,
-        "compute": 0
-      },
-      "interference_ratio": 0.8895833333333334
-    },
-    {
       "task_id": "llm-heavy-44",
-      "start_time": 263.84000000000003,
-      "completion_time": 291.44,
+      "start_time": 287.0,
+      "completion_time": 314.98,
       "state": "COMPLETED",
       "slo_met": true,
       "limiter_events": {
@@ -2355,63 +2394,11 @@
         "bandwidth": 0,
         "compute": 0
       },
-      "interference_ratio": 0.804999999999999
-    },
-    {
-      "task_id": "preprocess-pipeline-47",
-      "start_time": 264.6,
-      "completion_time": 294.90000000000003,
-      "state": "COMPLETED",
-      "slo_met": true,
-      "limiter_events": {
-        "memory": 0,
-        "bandwidth": 0,
-        "compute": 0
-      },
-      "interference_ratio": 1.0100000000000005
-    },
-    {
-      "task_id": "llm-heavy-24",
-      "start_time": 291.44,
-      "completion_time": 317.14,
-      "state": "COMPLETED",
-      "slo_met": true,
-      "limiter_events": {
-        "memory": 0,
-        "bandwidth": 0,
-        "compute": 0
-      },
-      "interference_ratio": 0.749583333333333
-    },
-    {
-      "task_id": "feature-etl-8",
-      "start_time": 288.48,
-      "completion_time": 318.44,
-      "state": "COMPLETED",
-      "slo_met": true,
-      "limiter_events": {
-        "memory": 0,
-        "bandwidth": 0,
-        "compute": 0
-      },
-      "interference_ratio": 0.998666666666666
-    },
-    {
-      "task_id": "llm-heavy-29",
-      "start_time": 290.94,
-      "completion_time": 320.0,
-      "state": "DROPPED",
-      "slo_met": false,
-      "limiter_events": {
-        "memory": 0,
-        "bandwidth": 0,
-        "compute": 0
-      },
-      "interference_ratio": 0.8475833333333335
+      "interference_ratio": 0.8160833333333339
     },
     {
       "task_id": "preprocess-pipeline-52",
-      "start_time": 294.90000000000003,
+      "start_time": 293.14,
       "completion_time": 320.0,
       "state": "DROPPED",
       "slo_met": false,
@@ -2420,24 +2407,11 @@
         "bandwidth": 0,
         "compute": 0
       },
-      "interference_ratio": 0.8366666666666656
-    },
-    {
-      "task_id": "llm-heavy-14",
-      "start_time": 317.14,
-      "completion_time": 320.0,
-      "state": "DROPPED",
-      "slo_met": false,
-      "limiter_events": {
-        "memory": 0,
-        "bandwidth": 0,
-        "compute": 0
-      },
-      "interference_ratio": 0.08341666666666707
+      "interference_ratio": 0.8953333333333338
     },
     {
       "task_id": "feature-etl-43",
-      "start_time": 318.44,
+      "start_time": 293.46,
       "completion_time": 320.0,
       "state": "DROPPED",
       "slo_met": false,
@@ -2446,10 +2420,23 @@
         "bandwidth": 0,
         "compute": 0
       },
-      "interference_ratio": 0.052000000000000074
+      "interference_ratio": 0.8846666666666674
     },
     {
-      "task_id": "llm-heavy-54",
+      "task_id": "llm-heavy-29",
+      "start_time": 314.98,
+      "completion_time": 320.0,
+      "state": "DROPPED",
+      "slo_met": false,
+      "limiter_events": {
+        "memory": 0,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": 0.14641666666666614
+    },
+    {
+      "task_id": "llm-heavy-24",
       "start_time": null,
       "completion_time": 320.0,
       "state": "DROPPED",
@@ -2462,7 +2449,20 @@
       "interference_ratio": null
     },
     {
-      "task_id": "multimodal-online-1",
+      "task_id": "llm-heavy-14",
+      "start_time": null,
+      "completion_time": 320.0,
+      "state": "DROPPED",
+      "slo_met": false,
+      "limiter_events": {
+        "memory": 0,
+        "bandwidth": 0,
+        "compute": 0
+      },
+      "interference_ratio": null
+    },
+    {
+      "task_id": "llm-heavy-54",
       "start_time": null,
       "completion_time": 320.0,
       "state": "DROPPED",
@@ -2751,7 +2751,7 @@
   "ir_histogram": [
     [
       0.1,
-      2
+      1
     ],
     [
       0.7,
@@ -2759,15 +2759,15 @@
     ],
     [
       0.8,
-      6
-    ],
-    [
-      0.9,
       4
     ],
     [
+      0.9,
+      5
+    ],
+    [
       1.0,
-      24
+      25
     ]
   ]
 }

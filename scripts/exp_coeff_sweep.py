@@ -96,26 +96,41 @@ def plot_bubble(data: List[Dict[str, float]], output: Path) -> None:
     fig, ax = plt.subplots(figsize=(7, 4.5))
     xs = [entry["ir_gain"] * 100 for entry in data]
     ys = [entry["slo_gain"] * 100 for entry in data]
+    if not xs or not ys:
+        return
+    min_x, max_x = min(xs), max(xs)
+    min_y, max_y = min(ys), max(ys)
+    margin_x = max(0.5, (max_x - min_x) * 0.05)
+    margin_y = max(0.5, (max_y - min_y) * 0.05)
     colors = [entry["sandbox_limited_ratio"] * 100 for entry in data]
     sizes = [80 + max(0.0, entry["drop_gain"]) * 3200 for entry in data]
     scatter = ax.scatter(xs, ys, c=colors, s=sizes, cmap="coolwarm", edgecolors="black", alpha=0.85)
+    seen = {}
     for entry in data:
         label = entry["name"].replace("plus", "p").replace("minus", "m")
+        point = (entry["ir_gain"] * 100, entry["slo_gain"] * 100)
+        offset = (6, 6)
+        if point in seen:
+            offset = (-6, -6) if seen[point] else (6, 6)
+            seen[point] = not seen[point]
+        else:
+            seen[point] = True
         ax.annotate(
             label,
-            (entry["ir_gain"] * 100, entry["slo_gain"] * 100),
+            point,
             textcoords="offset points",
-            xytext=(6, 6),
+            xytext=offset,
             fontsize=8,
             bbox=dict(boxstyle="round,pad=0.2", fc="white", alpha=0.7, linewidth=0.3),
         )
     ax.axvline(0, color="#666666", linestyle="--", linewidth=0.8)
     ax.axhline(0, color="#666666", linestyle="--", linewidth=0.8)
-    ax.set_xlabel("IR>1.25 reduction (percentage points)")
-    ax.set_ylabel("SLO improvement (percentage points)")
-    ax.set_title("Coefficient sweep: sandbox vs baseline improvements")
+    ax.set_xlabel("IR>1.25 reduction (%)")
+    ax.set_ylabel("SLO improvement (%)")
+    # ax.set_title("Coefficient sweep: sandbox vs baseline improvements")
     ax.grid(True, linestyle="--", alpha=0.35)
-    ax.set_xlim(left=min(-1.0, ax.get_xlim()[0]), right=10.0)
+    ax.set_xlim(left=min_x - margin_x, right=max_x + margin_x)
+    ax.set_ylim(bottom=min_y - margin_y, top=max_y + margin_y)
     cbar = fig.colorbar(scatter, ax=ax, pad=0.01, fraction=0.04)
     cbar.set_label("Sandbox limited task ratio (%)")
     fig.tight_layout(rect=[0, 0, 0.94, 1])
