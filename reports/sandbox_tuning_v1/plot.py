@@ -36,7 +36,7 @@ plt.scatter(
     df["ir_good"],
     alpha=0.25,
     s=18,
-    color="lightgray",
+    color="tab:blue",
     label="All configs",
 )
 
@@ -44,7 +44,7 @@ plt.scatter(
 plt.scatter(
     best["slo_rate"],
     best["ir_good"],
-    color="tab:blue",
+    color="tab:red",
     s=30,
     label=f"Top {topk} configs",
 )
@@ -60,9 +60,9 @@ for _, row in best.head(top_annotate).iterrows():
         va="bottom"
     )
 
-plt.xlabel("SLO hit rate")
-plt.ylabel("1 - fraction of requests with IR > 1")
-plt.title("Sandbox parameter combinations")
+plt.xlabel("SLO hit rate(%)")
+plt.ylabel("IR <= 1(%)")
+# plt.title("Sandbox parameter combinations")
 plt.xlim(xmin, xmax)
 plt.ylim(ymin, ymax)
 plt.grid(True, linestyle="--", alpha=0.4)
